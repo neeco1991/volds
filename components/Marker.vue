@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import markerIcon from '@/assets/marker-icon.png';
+import markerIcon from '../assets/marker-icon.png';
 
 const props = defineProps<{
   position: [number, number];
@@ -18,6 +18,5 @@ const props = defineProps<{
     </ol-source-vector>
   </ol-vector-layer>
 </template>
-
 
 <!-- effis statistic -->
