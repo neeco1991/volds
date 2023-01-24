@@ -55,73 +55,77 @@ const markers = ref(
 
 <template>
   <div id="overlay">
-    <v-card>
-      <div class="menu-title">Overlays</div>
-      <div class="menu-selector" v-for="overlay in overlays">
-        <v-switch
-          :label="`${overlay.title}`"
-          v-model="overlay.active"
-        ></v-switch>
-      </div>
+    <v-expansion-panels :v-model="[0, 1]" multiple>
+      <v-expansion-panel :value="true">
+        <v-expansion-panel-title>Overlays</v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <v-switch
+            v-for="overlay in overlays"
+            :label="`${overlay.title}`"
+            v-model="overlay.active"
+          ></v-switch>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
 
-      <div class="menu-title">Tiles</div>
-      <div class="menu-selector" v-for="tile in tiles">
-        <v-switch :label="`${tile.title}`" v-model="tile.active"></v-switch>
-      </div>
+      <v-expansion-panel>
+        <v-expansion-panel-title>Tiles</v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <v-switch
+            v-for="tile in tiles"
+            :label="`${tile.title}`"
+            v-model="tile.active"
+          ></v-switch>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
 
-      <div class="menu-title">Markers</div>
-      <div class="menu-selector" v-for="marker in markers">
-        <v-switch :label="`${marker.title}`" v-model="marker.active"></v-switch>
-      </div>
+      <v-expansion-panel>
+        <v-expansion-panel-title>Markeres</v-expansion-panel-title>
+        <v-expansion-panel-text
+          ><v-switch
+            v-for="marker in markers"
+            :label="`${marker.title}`"
+            v-model="marker.active"
+          ></v-switch
+        ></v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
-      <div v-for="(overlay, index) in overlays">
-        <OverlayItem
-          v-if="overlay.active"
-          :key="index.toString()"
-          :title="overlay.title"
-          :position="overlay.position"
-        ></OverlayItem>
-      </div>
+    <div v-for="(overlay, index) in overlays">
+      <OverlayItem
+        v-if="overlay.active"
+        :key="index.toString()"
+        :title="overlay.title"
+        :position="overlay.position"
+      ></OverlayItem>
+    </div>
 
-      <div v-for="(tile, index) in tiles">
-        <Tile
-          v-if="tile.active"
-          :key="index.toString()"
-          :url="tile.url"
-          :time="tile.time"
-          :layers="tile.layers"
-        ></Tile>
-      </div>
+    <div v-for="(tile, index) in tiles">
+      <Tile
+        v-if="tile.active"
+        :key="index.toString()"
+        :url="tile.url"
+        :time="tile.time"
+        :layers="tile.layers"
+      ></Tile>
+    </div>
 
-      <div v-for="(marker, index) in markers">
-        <Marker
-          v-if="marker.active"
-          :key="index.toString()"
-          :position="marker.position"
-        ></Marker>
-      </div>
-    </v-card>
+    <div v-for="(marker, index) in markers">
+      <Marker
+        v-if="marker.active"
+        :key="index.toString()"
+        :position="marker.position"
+      ></Marker>
+    </div>
   </div>
 </template>
 
 <style scoped>
 #overlay {
   position: absolute;
-  top: 4%;
+  top: 2%;
   left: 1%;
   width: 400px;
   max-height: 96%;
   z-index: 1000;
-}
-
-.menu-title {
-  font-size: 20px;
-  font-weight: bold;
-  padding: 10px;
-}
-
-.menu-selector {
-  padding: 10px;
-  height: 70px;
 }
 </style>
