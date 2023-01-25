@@ -10,6 +10,11 @@ export interface SimpleOverlayType {
   position: [number, number];
 }
 
+export interface MapType {
+  url: string;
+  title: string;
+}
+
 export interface TileType {
   title: string;
   url: string;
@@ -24,6 +29,7 @@ export interface MarkerType {
 
 type Props = {
   data: {
+    types?: MapType[];
     overlays?: SimpleOverlayType[];
     tiles?: TileType[];
     markers?: MarkerType[];
@@ -31,6 +37,13 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+
+const center = ref([10, 47]);
+const projection = ref('EPSG:4326');
+const zoom = ref(6);
+const rotation = ref(0);
+
+const mapUrl = ref('');
 
 const theme = useTheme();
 
@@ -54,12 +67,35 @@ const markers = ref(
     active: false,
   }))
 );
+
+const types = ref(
+  (props.data.types || []).map((element: MapType) => ({
+    ...element,
+    active: false,
+  }))
+);
+
+mapUrl.value = types.value[0].url;
 </script>
 
 <template>
   <div id="overlay">
     <v-expansion-panels multiple>
-      <v-expansion-panel :bg-color="theme.primary" :value="true">
+      <v-expansion-panel v-if="types.length" :bg-color="theme.primary">
+        <v-expansion-panel-title>Map type</v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <v-radio-group v-model="mapUrl">
+            <v-radio
+              v-for="type in types"
+              :key="type.title"
+              :label="type.title"
+              :value="type.url"
+            ></v-radio>
+          </v-radio-group>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+
+      <v-expansion-panel v-if="overlays.length" :bg-color="theme.primary">
         <v-expansion-panel-title>Overlays</v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-switch
@@ -70,7 +106,7 @@ const markers = ref(
         </v-expansion-panel-text>
       </v-expansion-panel>
 
-      <v-expansion-panel :bg-color="theme.primary">
+      <v-expansion-panel v-if="tiles.length" :bg-color="theme.primary">
         <v-expansion-panel-title>Tiles</v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-switch
@@ -81,7 +117,7 @@ const markers = ref(
         </v-expansion-panel-text>
       </v-expansion-panel>
 
-      <v-expansion-panel :bg-color="theme.primary">
+      <v-expansion-panel v-if="markers.length" :bg-color="theme.primary">
         <v-expansion-panel-title>Markeres</v-expansion-panel-title>
         <v-expansion-panel-text
           ><v-switch
@@ -119,6 +155,18 @@ const markers = ref(
         :position="marker.position"
       ></Marker>
     </div>
+
+    <ol-view
+      ref="view"
+      :center="center"
+      :rotation="rotation"
+      :zoom="zoom"
+      :projection="projection"
+    />
+
+    <ol-tile-layer>
+      <ol-source-osm :url="mapUrl" />
+    </ol-tile-layer>
   </div>
 </template>
 

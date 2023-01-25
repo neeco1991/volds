@@ -1,23 +1,5 @@
 <script lang="ts">
-import { ref } from 'vue';
 import Panel from '../components/Panel.vue';
-export default {
-  components: {
-    Panel,
-  },
-  setup() {
-    const center = ref([40, 40]);
-    const projection = ref('EPSG:4326');
-    const zoom = ref(8);
-    const rotation = ref(0);
-    return {
-      center,
-      projection,
-      zoom,
-      rotation,
-    };
-  },
-};
 </script>
 
 <template>
@@ -30,6 +12,20 @@ export default {
     >
       <Panel
         :data="{
+          types: [
+            {
+              url: 'https://api.maptiler.com/maps/b4cf7807-a184-42bd-af0e-2fe3e9a845f8/{z}/{x}/{y}.jpg?key=pNUD8X90rA79U5qeh6na',
+              title: 'Satellite Hybrid',
+            },
+            {
+              url: 'https://api.maptiler.com/maps/7c7075ad-4695-4ff1-8144-32e3babcbd1b/{z}/{x}/{y}.jpg?key=pNUD8X90rA79U5qeh6na',
+              title: 'Topographic + Water Bodies',
+            },
+            {
+              url: 'https://api.maptiler.com/maps/2d7bca5f-4d83-4c77-af69-b35b7766c443/{z}/{x}/{y}.jpg?key=pNUD8X90rA79U5qeh6na',
+              title: 'Streets',
+            },
+          ],
           overlays: [
             { title: 'TEST', position: [40, 40] },
             { title: 'TEST 2', position: [30, 30] },
@@ -65,18 +61,6 @@ export default {
           ],
         }"
       ></Panel>
-
-      <ol-view
-        ref="view"
-        :center="center"
-        :rotation="rotation"
-        :zoom="zoom"
-        :projection="projection"
-      />
-
-      <ol-tile-layer>
-        <ol-source-osm />
-      </ol-tile-layer>
     </ol-map>
   </div>
 </template>
