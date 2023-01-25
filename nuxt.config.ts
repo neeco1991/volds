@@ -5,6 +5,14 @@ export default defineNuxtConfig({
     '@mdi/font/css/materialdesignicons.min.css',
     'vue3-openlayers/dist/vue3-openlayers.css',
   ],
+  modules: [
+    [
+      '@pinia/nuxt',
+      {
+        autoImports: ['defineStore', 'acceptHMRUpdate'],
+      },
+    ],
+  ],
   build: {
     transpile: ['vuetify', 'openlayers'],
   },

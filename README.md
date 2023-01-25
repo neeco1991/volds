@@ -1,42 +1,13 @@
-# Nuxt 3 Minimal Starter
+# Development
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+- Clone the repository
+- Run `yarn` to install dependencies
+- Run `yarn dev` to start the development server
 
-## Setup
+# Stack
 
-Make sure to install the dependencies:
-
-```bash
-# yarn
-yarn install
-
-# npm
-npm install
-
-# pnpm
-pnpm install
-```
-
-## Development Server
-
-Start the development server on http://localhost:3000
-
-```bash
-npm run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- [Nuxt.js](https://nuxt.com/)
+- [Vuetify](https://next.vuetifyjs.com/) for UI
+- [OpenLayers](https://openlayers.org/) with [his vue library](https://vue3openlayers.netlify.app/)
+- [Pinia](https://pinia.vuejs.org/) for state management
+- [TypeScript](https://www.typescriptlang.org/) for type safety

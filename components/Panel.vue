@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import OverlayItem from './OverlayItem.vue';
 import Tile from './Tile.vue';
 import Marker from './Marker.vue';
+import { useTheme } from '../stores/theme';
 
 export interface SimpleOverlayType {
   title: string;
@@ -31,6 +32,8 @@ type Props = {
 
 const props = defineProps<Props>();
 
+const theme = useTheme();
+
 const overlays = ref(
   (props.data.overlays || []).map((element: SimpleOverlayType) => ({
     ...element,
@@ -55,8 +58,8 @@ const markers = ref(
 
 <template>
   <div id="overlay">
-    <v-expansion-panels :v-model="[0, 1]" multiple>
-      <v-expansion-panel :value="true">
+    <v-expansion-panels multiple>
+      <v-expansion-panel :bg-color="theme.primary" :value="true">
         <v-expansion-panel-title>Overlays</v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-switch
@@ -67,7 +70,7 @@ const markers = ref(
         </v-expansion-panel-text>
       </v-expansion-panel>
 
-      <v-expansion-panel>
+      <v-expansion-panel :bg-color="theme.primary">
         <v-expansion-panel-title>Tiles</v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-switch
@@ -78,7 +81,7 @@ const markers = ref(
         </v-expansion-panel-text>
       </v-expansion-panel>
 
-      <v-expansion-panel>
+      <v-expansion-panel :bg-color="theme.primary">
         <v-expansion-panel-title>Markeres</v-expansion-panel-title>
         <v-expansion-panel-text
           ><v-switch
