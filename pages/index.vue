@@ -16,51 +16,66 @@ import Panel from '../components/Panel.vue';
             {
               url: 'https://api.maptiler.com/maps/b4cf7807-a184-42bd-af0e-2fe3e9a845f8/{z}/{x}/{y}.jpg?key=pNUD8X90rA79U5qeh6na',
               title: 'Satellite Hybrid',
+              id: 'satellite',
             },
             {
               url: 'https://api.maptiler.com/maps/7c7075ad-4695-4ff1-8144-32e3babcbd1b/{z}/{x}/{y}.jpg?key=pNUD8X90rA79U5qeh6na',
               title: 'Topographic + Water Bodies',
+              id: 'topographic',
             },
             {
               url: 'https://api.maptiler.com/maps/2d7bca5f-4d83-4c77-af69-b35b7766c443/{z}/{x}/{y}.jpg?key=pNUD8X90rA79U5qeh6na',
               title: 'Streets',
+              id: 'streets',
             },
-          ],
-          overlays: [
-            { title: 'TEST', position: [40, 40] },
-            { title: 'TEST 2', position: [30, 30] },
-            { title: 'TEST 3', position: [33, 37] },
-            { title: 'TEST 4', position: [37, 38] },
-            { title: 'TEST 5', position: [42, 42] },
           ],
           tiles: [
             {
-              title: 'MODIS',
-              url: 'https://maps.wild-fire.eu/gwis',
-              time: '2022-01-10',
-              layers: 'modis.hs',
-            },
-            {
-              title: 'VIIRS',
-              url: 'https://maps.wild-fire.eu/gwis',
-              time: '2022-01-10',
-              layers: 'viirs.hs',
-            },
-            {
-              title: 'ECMWF',
+              title: 'Fire Weather Index (FWI))',
+              id: 'fwi',
+              type: 'wms',
               url: 'https://ies-ows.jrc.ec.europa.eu/effis',
-              time: '2023-01-12',
+              time: new Date().toISOString().slice(0, 10),
               layers: 'ecmwf007.fwi',
             },
-          ],
-          markers: [
             {
-              title: 'Marker 1',
-              position: [45, 45],
+              title: 'GHSL Built up',
+              id: 'ghsl',
+              type: 'wms',
+              url: 'https://ies-ows.jrc.ec.europa.eu/gwis',
+              time: new Date().toISOString().slice(0, 10),
+              layers: 'ghsl',
+            },
+            {
+              title: 'Corine Land Cover',
+              id: 'corine',
+              type: 'wms',
+              url: 'https://ies-ows.jrc.ec.europa.eu/effis',
+              time: new Date().toISOString().slice(0, 10),
+              layers: 'corine.l2',
+            },
+            {
+              title: 'Fuels',
+              id: 'fuels',
+              type: 'wms',
+              url: 'https://ies-ows.jrc.ec.europa.eu/effis',
+              time: new Date().toISOString().slice(0, 10),
+              layers: 'fuel_map',
+            },
+            {
+              title: 'Water',
+              id: 'water',
+              type: 'zyx',
+              url: 'https://storage.googleapis.com/global-surface-water/maptiles/transitions/{z}/{x}/{y}.png',
+              time: new Date().toISOString().slice(0, 10),
+              layers: 'fuel_map',
             },
           ],
+          activeFireSelector: true,
         }"
       ></Panel>
+
+      <ListOfFires></ListOfFires>
     </ol-map>
   </div>
 </template>

@@ -4,6 +4,7 @@ import OverlayItem from './OverlayItem.vue';
 import Tile from './Tile.vue';
 import Marker from './Marker.vue';
 import { useTheme } from '../stores/theme';
+import { useSettings } from '../stores/settings';
 
 export interface SimpleOverlayType {
   title: string;
@@ -13,11 +14,14 @@ export interface SimpleOverlayType {
 export interface MapType {
   url: string;
   title: string;
+  id: string;
 }
 
 export interface TileType {
   title: string;
   url: string;
+  type: string;
+  id: string;
   time: string;
   layers: string;
 }
@@ -33,6 +37,7 @@ type Props = {
     overlays?: SimpleOverlayType[];
     tiles?: TileType[];
     markers?: MarkerType[];
+    activeFireSelector?: boolean;
   };
 };
 
@@ -46,6 +51,8 @@ const rotation = ref(0);
 const mapUrl = ref('');
 
 const theme = useTheme();
+const router = useRouter();
+const settings = useSettings();
 
 const overlays = ref(
   (props.data.overlays || []).map((element: SimpleOverlayType) => ({
@@ -75,13 +82,93 @@ const types = ref(
   }))
 );
 
+const setMapType = (type: MapType) => {
+  mapUrl.value = type.url;
+  const query = router.currentRoute.value.query;
+
+  router.push({ query: { ...query, type: type.id } });
+};
+
+const setTilesInUrl = (id: string) => {
+  const query = router.currentRoute.value.query;
+
+  const activeTiles = tiles.value
+    .filter((element) => element.active)
+    .map(({ id }) => id);
+
+  if (!activeTiles.includes(id)) {
+    activeTiles.push(id);
+  } else {
+    activeTiles.splice(activeTiles.indexOf(id), 1);
+  }
+
+  router.push({ query: { ...query, tile: activeTiles } });
+};
+
+const closeSettings = () => {
+  settings.toggleActive();
+};
+
+onMounted(() => {
+  const query = router.currentRoute.value.query;
+  const { type, tile } = query;
+  if (type) {
+    const mapType = types.value.find((element) => element.id === type);
+    if (mapType) {
+      mapUrl.value = mapType.url;
+    }
+  }
+
+  if (tile) {
+    const activeTiles = Array.isArray(tile) ? tile : [tile];
+    tiles.value = tiles.value.map((element) => ({
+      ...element,
+      active: activeTiles.includes(element.id),
+    }));
+  }
+});
+
 mapUrl.value = types.value[0].url;
 </script>
 
 <template>
   <div id="overlay">
-    <v-expansion-panels multiple>
-      <v-expansion-panel v-if="types.length" :bg-color="theme.primary">
+    <v-card
+      v-if="settings.active"
+      class="mx-auto rounded-t-lg rounded-b-0"
+      :color="theme.primary"
+    >
+      <template v-slot:title>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <div style="display: flex; align-items: center">
+            <v-icon color="#ada6a2" icon="mdi-cog"></v-icon>
+            <p style="margin-left: 1rem">Settings and layers</p>
+          </div>
+          <v-btn
+            icon
+            border="none"
+            variant="flat"
+            color="transparent"
+            @click="closeSettings()"
+          >
+            <v-icon icon="mdi-close" size="x-large"></v-icon>
+          </v-btn>
+        </div>
+      </template>
+    </v-card>
+
+    <v-expansion-panels class="rounded-t-0" v-if="settings.active" multiple>
+      <v-expansion-panel
+        class="rounded-t-0"
+        v-if="types.length"
+        :bg-color="theme.primary"
+      >
         <v-expansion-panel-title>Map type</v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-radio-group v-model="mapUrl">
@@ -90,6 +177,7 @@ mapUrl.value = types.value[0].url;
               :key="type.title"
               :label="type.title"
               :value="type.url"
+              @click="setMapType(type)"
             ></v-radio>
           </v-radio-group>
         </v-expansion-panel-text>
@@ -107,12 +195,13 @@ mapUrl.value = types.value[0].url;
       </v-expansion-panel>
 
       <v-expansion-panel v-if="tiles.length" :bg-color="theme.primary">
-        <v-expansion-panel-title>Tiles</v-expansion-panel-title>
+        <v-expansion-panel-title>Layers</v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-switch
             v-for="tile in tiles"
             :label="`${tile.title}`"
             v-model="tile.active"
+            @click="setTilesInUrl(tile.id)"
           ></v-switch>
         </v-expansion-panel-text>
       </v-expansion-panel>
@@ -126,6 +215,16 @@ mapUrl.value = types.value[0].url;
             v-model="marker.active"
           ></v-switch
         ></v-expansion-panel-text>
+      </v-expansion-panel>
+
+      <v-expansion-panel
+        v-if="data.activeFireSelector"
+        :bg-color="theme.primary"
+      >
+        <v-expansion-panel-title>Active fires</v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <ActiveFires></ActiveFires>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -145,6 +244,7 @@ mapUrl.value = types.value[0].url;
         :url="tile.url"
         :time="tile.time"
         :layers="tile.layers"
+        :type="tile.type"
       ></Tile>
     </div>
 

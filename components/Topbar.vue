@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFires } from '../stores/fires';
+import { useSettings } from '../stores/settings';
 import { useTheme } from '../stores/theme';
 
 interface Item {
@@ -8,6 +10,8 @@ interface Item {
 }
 
 const theme = useTheme();
+const settings = useSettings();
+const fires = useFires();
 
 const items: Item[] = [
   {
@@ -34,6 +38,14 @@ const items: Item[] = [
 
 const changeTheme = () => {
   theme.toggleDark();
+};
+
+const toggleSettings = () => {
+  settings.toggleActive();
+};
+
+const toggleFires = () => {
+  fires.toggleActive();
 };
 </script>
 
@@ -63,6 +75,32 @@ const changeTheme = () => {
         transform: translateY(-50%);
       "
     >
+      <v-btn
+        icon
+        border="none"
+        variant="flat"
+        color="transparent"
+        @click="toggleSettings()"
+      >
+        <v-icon
+          :color="settings.isActive ? '#ada6a2' : undefined"
+          icon="mdi-cog"
+        ></v-icon>
+      </v-btn>
+
+      <v-btn
+        icon
+        border="none"
+        variant="flat"
+        color="transparent"
+        @click="toggleFires()"
+      >
+        <v-icon
+          :color="fires.isActive ? '#ff4000' : undefined"
+          icon="mdi-fire"
+        ></v-icon>
+      </v-btn>
+
       <v-btn
         icon
         border="none"
