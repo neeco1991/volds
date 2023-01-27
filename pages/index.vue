@@ -1,5 +1,17 @@
-<script lang="ts">
+<script setup lang="ts">
+import { useFires } from '~~/stores/fires';
 import Panel from '../components/Panel.vue';
+const router = useRouter();
+const fires = useFires();
+
+onMounted(async () => {
+  const { query } = router.currentRoute.value;
+  if (query.fires === 'true') {
+    console.log('test');
+    fires.setActive(true);
+    await fires.fetchList();
+  }
+});
 </script>
 
 <template>

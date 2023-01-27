@@ -4,7 +4,7 @@ export default defineNuxtConfig({
     'vuetify/lib/styles/main.sass',
     '@mdi/font/css/materialdesignicons.min.css',
     'vue3-openlayers/dist/vue3-openlayers.css',
-    '@vuepic/vue-datepicker/dist/main.css',
+    'v-calendar/dist/style.css',
   ],
   modules: [
     [
@@ -15,7 +15,7 @@ export default defineNuxtConfig({
     ],
   ],
   build: {
-    transpile: ['vuetify', 'openlayers', '@vuepic/vue-datepicker'],
+    transpile: ['vuetify', 'openlayers', 'v-calendar'],
   },
   vite: {
     define: {

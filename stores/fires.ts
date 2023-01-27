@@ -8,10 +8,13 @@ export const useFires = defineStore('fires', {
     list: [] as Fire[],
     count: 0,
     error: null as string | null,
+    lastFetch: ['', '', 0] as [string, string, number],
   }),
   getters: {
     isActive: ({ active }) => active,
     isLoading: ({ loading }) => loading,
+    getLastFetch: ({ lastFetch }) => lastFetch,
+    getList: ({ list }) => list,
   },
   actions: {
     toggleActive() {
@@ -19,6 +22,9 @@ export const useFires = defineStore('fires', {
     },
     setActive(target: boolean) {
       this.active = target;
+    },
+    setLastFetch(from: string, to: string, area: number) {
+      this.lastFetch = [from, to, area];
     },
     async fetchList(from = '2022-09-21', to = '2022-10-27', area = 30) {
       this.loading = true;

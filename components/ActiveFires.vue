@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import Datepicker from '@vuepic/vue-datepicker';
 import { useFires } from '~~/stores/fires';
+import { Calendar, DatePicker } from 'v-calendar';
+import { useTheme } from '~~/stores/theme';
+
 const fires = useFires();
 const router = useRouter();
+const theme = useTheme();
 let switchActive = ref<boolean>(false);
 
-const date = ref<[Date, Date]>([
-  new Date(new Date().setDate(new Date().getDate() - 7)),
-  new Date(),
-]);
+const date = ref<{ start: Date; end: Date }>({
+  start: new Date(new Date().setDate(new Date().getDate() - 7)),
+  end: new Date(),
+});
+
+const area = ref<number>(30);
 
 const showFires = () => {
   switchActive.value = !switchActive.value;
-  console.log(switchActive.value);
   if (switchActive.value) {
     fetchData();
   }
@@ -40,7 +44,17 @@ onMounted(() => {
 });
 
 const fetchData = async () => {
-  await fires.fetchList();
+  const start = date.value.start.toISOString().split('T')[0];
+  const end = date.value.end.toISOString().split('T')[0];
+  if (
+    fires.getLastFetch[0] === start &&
+    fires.getLastFetch[1] === end &&
+    fires.getLastFetch[2] === area.value
+  ) {
+    return;
+  }
+  await fires.fetchList(start, end, area.value);
+  fires.setLastFetch(start, end, area.value);
 };
 </script>
 
@@ -52,16 +66,12 @@ const fetchData = async () => {
   >
   </v-switch>
 
-  <div
-    style="
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    "
-  >
-    Select a date range
-    <Datepicker v-model="date" range dark inline auto-apply> </Datepicker>
-  </div>
+  <p style="margin-bottom: 0.5rem">Select a date range:</p>
+  <DatePicker
+    :is-dark="theme.isDark"
+    is-expanded
+    is-range
+    v-model="date"
+    @click.stop="fetchData()"
+  ></DatePicker>
 </template>

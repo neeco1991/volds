@@ -278,5 +278,12 @@ mapUrl.value = types.value[0].url;
   width: 400px;
   max-height: 96%;
   z-index: 1000;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+}
+
+#overlay::-webkit-scrollbar {
+  display: none;
 }
 </style>
