@@ -13,54 +13,64 @@ const date = ref<{ start: Date; end: Date }>({
   end: new Date(),
 });
 
-const area = ref<number>(30);
+let area = ref<number>(30);
 
 const showFires = () => {
   switchActive.value = !switchActive.value;
-  if (switchActive.value) {
-    fetchData();
-  }
-
-  const { query } = router.currentRoute.value;
-
-  if (query.fires === undefined) {
+  if (router.currentRoute.value.query.fires === undefined) {
     fires.setActive(true);
   }
 
-  router.push({
-    query: {
-      ...query,
-      fires: switchActive.value.toString(),
-    },
-  });
+  updateQueryParams();
 };
 
 onMounted(() => {
   const { query } = router.currentRoute.value;
   if (query.fires === 'true') {
     switchActive.value = true;
-    fetchData();
+  }
+
+  if (query.firesFrom && query.firesTo) {
+    date.value.start = new Date(query.firesFrom as string);
+    date.value.end = new Date(query.firesTo as string);
+  }
+
+  if (query.firesArea) {
+    area.value = Number(query.firesArea);
   }
 });
 
-const fetchData = async () => {
-  const start = date.value.start.toISOString().split('T')[0];
-  const end = date.value.end.toISOString().split('T')[0];
+const updateQueryParams = () => {
+  const { query } = router.currentRoute.value;
+
+  const firesFrom = date.value.start.toISOString().slice(0, 10);
+  const firesTo = date.value.end.toISOString().slice(0, 10);
+  const firesArea = area.value;
+
   if (
-    fires.getLastFetch[0] === start &&
-    fires.getLastFetch[1] === end &&
-    fires.getLastFetch[2] === area.value
+    switchActive.value === true &&
+    (firesFrom !== query.firesFrom ||
+      firesTo !== query.firesTo ||
+      firesArea !== Number(query.firesArea))
   ) {
-    return;
+    fires.fetchList(firesFrom, firesTo, firesArea);
   }
-  await fires.fetchList(start, end, area.value);
-  fires.setLastFetch(start, end, area.value);
+
+  router.push({
+    query: {
+      ...query,
+      fires: switchActive.value.toString(),
+      firesFrom,
+      firesTo,
+      firesArea,
+    },
+  });
 };
 </script>
 
 <template>
   <v-switch
-    label="Show active fires"
+    label="Show active fires on map"
     :model-value="switchActive"
     @click="showFires()"
   >
@@ -72,6 +82,22 @@ const fetchData = async () => {
     is-expanded
     is-range
     v-model="date"
-    @click.stop="fetchData()"
+    @click.stop="updateQueryParams()"
   ></DatePicker>
+
+  <div
+    style="display: flex; justify-content: space-between; align-items: baseline"
+  >
+    <p style="margin-top: 1rem">Select minimum fire size:</p>
+    <p>{{ area.toString() }} ht</p>
+  </div>
+  <v-slider
+    v-model="area"
+    :min="0"
+    :max="500"
+    :step="1"
+    :color="theme.isDark ? 'white' : 'black'"
+    :thumb-size="0"
+    @click.stop="updateQueryParams()"
+  ></v-slider>
 </template>

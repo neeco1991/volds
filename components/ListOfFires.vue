@@ -31,6 +31,8 @@ const theme = useTheme();
           </v-btn>
         </div>
       </template>
+
+      <fire-card v-for="fire in fires.list"></fire-card>
     </v-card>
   </div>
 </template>
@@ -43,5 +45,12 @@ const theme = useTheme();
   width: 400px;
   max-height: 96%;
   z-index: 1000;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+}
+
+#fires::-webkit-scrollbar {
+  display: none;
 }
 </style>

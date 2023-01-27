@@ -5,11 +5,19 @@ const router = useRouter();
 const fires = useFires();
 
 onMounted(async () => {
-  const { query } = router.currentRoute.value;
-  if (query.fires === 'true') {
-    console.log('test');
+  const { query } = await router.currentRoute.value;
+  if (
+    query.fires === 'true' &&
+    query.firesFrom &&
+    query.firesTo &&
+    query.firesArea
+  ) {
     fires.setActive(true);
-    await fires.fetchList();
+    await fires.fetchList(
+      query.firesFrom as string,
+      query.firesTo as string,
+      Number(query.firesArea)
+    );
   }
 });
 </script>
