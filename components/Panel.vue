@@ -114,6 +114,8 @@ onMounted(() => {
     setMapType(
       types.value.find((element) => element.id === type) || types.value[0]
     );
+  } else {
+    setMapType(types.value[0]);
   }
 
   if (tile) {

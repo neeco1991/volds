@@ -1,5 +1,5 @@
 const BASE_URL = `https://api.wild-fire.eu/rest/firespread/forecast/`;
-// ?finaldate__gte=2022-09-21&finaldate__lte=2022-10-27&area__gte=30&ordering=-initialdate
+const router = useRouter();
 
 export const useFires = defineStore('fires', {
   state: () => ({

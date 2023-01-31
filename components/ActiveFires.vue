@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { useFires } from '~~/stores/fires';
-import { Calendar, DatePicker } from 'v-calendar';
+import { DatePicker } from 'v-calendar';
 import { useTheme } from '~~/stores/theme';
 
 const fires = useFires();
 const router = useRouter();
 const theme = useTheme();
-let switchActive = ref<boolean>(false);
 
 const date = ref<{ start: Date; end: Date }>({
   start: new Date(new Date().setDate(new Date().getDate() - 7)),
@@ -17,6 +16,14 @@ let area = ref<number>(30);
 
 const showFires = () => {
   fires.toggleActive();
+
+  if (fires.isActive) {
+    fires.fetchList(
+      date.value.start.toISOString().slice(0, 10),
+      date.value.end.toISOString().slice(0, 10),
+      area.value
+    );
+  }
 
   updateQueryParams();
 };

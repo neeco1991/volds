@@ -81,6 +81,8 @@ onMounted(async () => {
     if (type) {
       map.setUrl(type.url);
     }
+  } else {
+    map.setUrl(data.types[0].url);
   }
 });
 </script>
@@ -89,7 +91,7 @@ onMounted(async () => {
   <div id="overlay">
     <Panel v-if="settings.active" :data="data"></Panel>
 
-    <div style="flex-grow: 1"></div>
+    <Comparator></Comparator>
 
     <ListOfFires></ListOfFires>
 
