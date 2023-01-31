@@ -12,6 +12,7 @@ interface Item {
 const theme = useTheme();
 const settings = useSettings();
 const fires = useFires();
+const router = useRouter();
 
 const items: Item[] = [
   {
@@ -45,7 +46,15 @@ const toggleSettings = () => {
 };
 
 const toggleFires = () => {
+  const { query } = router.currentRoute.value;
   fires.toggleActive();
+
+  router.push({
+    query: {
+      ...query,
+      fires: fires.isActive.toString(),
+    },
+  });
 };
 </script>
 

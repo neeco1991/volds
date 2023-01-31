@@ -16,19 +16,13 @@ const date = ref<{ start: Date; end: Date }>({
 let area = ref<number>(30);
 
 const showFires = () => {
-  switchActive.value = !switchActive.value;
-  if (router.currentRoute.value.query.fires === undefined) {
-    fires.setActive(true);
-  }
+  fires.toggleActive();
 
   updateQueryParams();
 };
 
 onMounted(() => {
   const { query } = router.currentRoute.value;
-  if (query.fires === 'true') {
-    switchActive.value = true;
-  }
 
   if (query.firesFrom && query.firesTo) {
     date.value.start = new Date(query.firesFrom as string);
@@ -48,7 +42,7 @@ const updateQueryParams = () => {
   const firesArea = area.value;
 
   if (
-    switchActive.value === true &&
+    fires.isActive &&
     (firesFrom !== query.firesFrom ||
       firesTo !== query.firesTo ||
       firesArea !== Number(query.firesArea))
@@ -59,7 +53,7 @@ const updateQueryParams = () => {
   router.push({
     query: {
       ...query,
-      fires: switchActive.value.toString(),
+      fires: fires.isActive.toString(),
       firesFrom,
       firesTo,
       firesArea,
@@ -71,7 +65,7 @@ const updateQueryParams = () => {
 <template>
   <v-switch
     label="Show active fires on map"
-    :model-value="switchActive"
+    :model-value="fires.isActive"
     @click="showFires()"
   >
   </v-switch>

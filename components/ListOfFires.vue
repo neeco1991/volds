@@ -7,7 +7,11 @@ const theme = useTheme();
 
 <template>
   <div id="fires" v-if="fires.active">
-    <v-card class="mx-auto rounded-t-lg" :color="theme.primary">
+    <v-card
+      class="mx-auto rounded-t-lg"
+      :color="theme.primary"
+      :loading="fires.isLoading"
+    >
       <template v-slot:title>
         <div
           style="
@@ -32,22 +36,22 @@ const theme = useTheme();
         </div>
       </template>
 
-      <fire-card v-for="fire in fires.list"></fire-card>
+      <div style="margin-bottom: 1.6rem">
+        <fire-card v-for="fire in fires.list" :data="fire"></fire-card>
+      </div>
+      <empty-fires v-if="fires.count === 0"></empty-fires>
     </v-card>
   </div>
 </template>
 
 <style scoped>
 #fires {
-  position: absolute;
-  top: 2%;
-  right: 1%;
   width: 400px;
-  max-height: 96%;
-  z-index: 1000;
   overflow-y: scroll;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none;
+  border-radius: inherit;
+  z-index: 1000;
 }
 
 #fires::-webkit-scrollbar {

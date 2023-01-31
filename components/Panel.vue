@@ -5,6 +5,7 @@ import Tile from './Tile.vue';
 import Marker from './Marker.vue';
 import { useTheme } from '../stores/theme';
 import { useSettings } from '../stores/settings';
+import { useMap } from '~~/stores/map';
 
 export interface SimpleOverlayType {
   title: string;
@@ -43,16 +44,10 @@ type Props = {
 
 const props = defineProps<Props>();
 
-const center = ref([10, 47]);
-const projection = ref('EPSG:4326');
-const zoom = ref(6);
-const rotation = ref(0);
-
-const mapUrl = ref('');
-
 const theme = useTheme();
 const router = useRouter();
 const settings = useSettings();
+const map = useMap();
 
 const overlays = ref(
   (props.data.overlays || []).map((element: SimpleOverlayType) => ({
@@ -82,7 +77,10 @@ const types = ref(
   }))
 );
 
+const mapUrl = ref('');
+
 const setMapType = (type: MapType) => {
+  map.setUrl(type.url);
   mapUrl.value = type.url;
   const query = router.currentRoute.value.query;
 
@@ -113,10 +111,9 @@ onMounted(() => {
   const query = router.currentRoute.value.query;
   const { type, tile } = query;
   if (type) {
-    const mapType = types.value.find((element) => element.id === type);
-    if (mapType) {
-      mapUrl.value = mapType.url;
-    }
+    setMapType(
+      types.value.find((element) => element.id === type) || types.value[0]
+    );
   }
 
   if (tile) {
@@ -127,12 +124,10 @@ onMounted(() => {
     }));
   }
 });
-
-mapUrl.value = types.value[0].url;
 </script>
 
 <template>
-  <div id="overlay">
+  <div id="panel">
     <v-card
       v-if="settings.active"
       class="mx-auto rounded-t-lg rounded-b-0"
@@ -255,35 +250,20 @@ mapUrl.value = types.value[0].url;
         :position="marker.position"
       ></Marker>
     </div>
-
-    <ol-view
-      ref="view"
-      :center="center"
-      :rotation="rotation"
-      :zoom="zoom"
-      :projection="projection"
-    />
-
-    <ol-tile-layer>
-      <ol-source-osm :url="mapUrl" />
-    </ol-tile-layer>
   </div>
 </template>
 
 <style scoped>
-#overlay {
-  position: absolute;
-  top: 2%;
-  left: 1%;
+#panel {
   width: 400px;
-  max-height: 96%;
-  z-index: 1000;
   overflow-y: scroll;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none;
+  border-radius: inherit;
+  z-index: 1000;
 }
 
-#overlay::-webkit-scrollbar {
+#panel::-webkit-scrollbar {
   display: none;
 }
 </style>

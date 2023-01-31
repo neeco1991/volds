@@ -8,11 +8,13 @@ export const useFires = defineStore('fires', {
     list: [] as Fire[],
     count: 0,
     error: null as string | null,
+    compare: [] as Fire[],
   }),
   getters: {
     isActive: ({ active }) => active,
     isLoading: ({ loading }) => loading,
     getList: ({ list }) => list,
+    getCompare: ({ compare }) => compare,
   },
   actions: {
     toggleActive() {
@@ -20,6 +22,14 @@ export const useFires = defineStore('fires', {
     },
     setActive(target: boolean) {
       this.active = target;
+    },
+    toggleCompare(fire: Fire) {
+      const index = this.compare.findIndex((f) => f.id === fire.id);
+      if (index === -1) {
+        this.compare.push(fire);
+      } else {
+        this.compare.splice(index, 1);
+      }
     },
     async fetchList(from: string, to: string, area = 30) {
       this.loading = true;
@@ -49,7 +59,7 @@ interface Response {
   results: Fire[];
 }
 
-interface Fire {
+export interface Fire {
   date: string;
   dss_date: any[];
   effis_data: EffisData;
@@ -94,7 +104,7 @@ interface Shape {
 }
 
 interface Indicator {
-  infrastructure: number;
+  infrastructures: number;
   people: number;
   protected: number;
   size: number;
