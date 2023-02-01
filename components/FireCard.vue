@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Fire } from '~~/stores/fires';
 import { useFires } from '~~/stores/fires';
+import indicators from '~~/lib/indicators';
 const fires = useFires();
 const router = useRouter();
 
@@ -85,7 +86,7 @@ const compare = async () => {
     >
       <div>
         <v-btn size="small" variant="outlined" @click="compare()">
-          {{ '&larr; Compare' }}
+          {{ '&larr; Details' }}
         </v-btn>
       </div>
 
@@ -93,55 +94,74 @@ const compare = async () => {
         <div>
           <v-icon
             style="margin-right: 0.5rem"
-            :color="indicatorColors[data.indicators.people]"
+            :color="indicators.info('people', data.indicators.people).color"
             icon="mdi-account-multiple"
           ></v-icon>
           <v-tooltip activator="parent" location="bottom"
-            >People: {{ tooltips.people[data.indicators.people] }}</v-tooltip
-          >
-        </div>
-        <div>
-          <v-icon
-            style="margin-right: 0.5rem"
-            :color="indicatorColors[data.indicators.infrastructures]"
-            icon="mdi-domain"
-          ></v-icon>
-          <v-tooltip activator="parent" location="bottom"
-            >Infrastructures:
+            >People:
             {{
-              tooltips.infrastructures[data.indicators.infrastructures]
+              indicators.info('people', data.indicators.people).text
             }}</v-tooltip
           >
         </div>
         <div>
           <v-icon
             style="margin-right: 0.5rem"
-            :color="indicatorColors[data.indicators.protected]"
+            :color="
+              indicators.info(
+                'infrastructures',
+                data.indicators.infrastructures
+              ).color
+            "
+            icon="mdi-domain"
+          ></v-icon>
+          <v-tooltip activator="parent" location="bottom"
+            >Infrastructures:
+            {{
+              indicators.info(
+                'infrastructures',
+                data.indicators.infrastructures
+              ).text
+            }}</v-tooltip
+          >
+        </div>
+        <div>
+          <v-icon
+            style="margin-right: 0.5rem"
+            :color="
+              indicators.info('protected', data.indicators.protected).color
+            "
             icon="mdi-pine-tree"
           ></v-icon>
           <v-tooltip activator="parent" location="bottom"
             >Protected areas:
-            {{ tooltips.protected[data.indicators.protected] }}</v-tooltip
+            {{
+              indicators.info('protected', data.indicators.protected).text
+            }}</v-tooltip
           >
         </div>
         <div>
           <v-icon
             style="margin-right: 0.5rem"
-            :color="indicatorColors[data.indicators.size]"
+            :color="indicators.info('size', data.indicators.size).color"
             icon="mdi-fire"
           ></v-icon>
           <v-tooltip activator="parent" location="bottom"
-            >Fire size: {{ tooltips.size[data.indicators.size] }}</v-tooltip
+            >Fire size:
+            {{ indicators.info('size', data.indicators.size).text }}</v-tooltip
           >
         </div>
         <div>
           <v-icon
             style="margin-right: 0.5rem"
-            :color="indicatorColors[data.indicators.upland]"
+            :color="indicators.info('upland', data.indicators.upland).color"
             icon="mdi-terrain"
           ></v-icon>
           <v-tooltip activator="parent" location="bottom"
-            >Terrain: {{ tooltips.upland[data.indicators.upland] }}</v-tooltip
+            >Terrain:
+            {{
+              indicators.info('upland', data.indicators.upland).text
+            }}</v-tooltip
           >
         </div>
       </div>

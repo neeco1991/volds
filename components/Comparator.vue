@@ -33,7 +33,6 @@ onMounted(() => {
   border-radius: 4px;
   display: flex;
   justify-content: flex-start;
-  z-index: 500;
   overflow: scroll;
 }
 
