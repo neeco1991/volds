@@ -1,7 +1,14 @@
 <script setup lang="ts">
+import indicators from '~~/lib/indicators';
 import { Fire, useFires } from '~~/stores/fires';
 import { useTheme } from '~~/stores/theme';
 
+const rankingColors = ['#4caf50', '#ffeb3b', '#f44336'];
+const rankingDesc = [
+  'Not critical',
+  'Critical in the next 24 hours',
+  'Critical',
+];
 const props = defineProps<{ data: Fire }>();
 const theme = useTheme();
 const fires = useFires();
@@ -33,6 +40,150 @@ const fires = useFires();
           </v-btn>
         </div>
       </template>
+
+      <div
+        style="
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+        "
+      >
+        <v-card-title>
+          {{ props.data.effis_data.admlvl3 || props.data.effis_data.country }}
+        </v-card-title>
+        <v-card-subtitle>
+          {{ props.data.effis_data.iso2 }}
+        </v-card-subtitle>
+      </div>
+
+      <div class="little-box">
+        <v-card-subtitle> Location </v-card-subtitle>
+        <v-card-text>{{
+          [
+            props.data.effis_data.country,
+            props.data.effis_data.admlvl3 || '',
+            props.data.effis_data.admlvl4 || '',
+            props.data.effis_data.admlvl5 || '',
+          ]
+            .filter((frame) => !!frame)
+            .join(' / ')
+        }}</v-card-text>
+      </div>
+
+      <div class="little-box">
+        <v-card-subtitle> Ranking </v-card-subtitle>
+        <v-card-text :style="`color: ${rankingColors[props.data.ranking]}`">{{
+          rankingDesc[props.data.ranking]
+        }}</v-card-text>
+      </div>
+
+      <div class="mid-box">
+        <v-card-subtitle> Ranking indicators </v-card-subtitle>
+        <v-card-text>
+          <div class="ranking-line">
+            <p>People</p>
+            <p
+              :style="`color: ${
+                indicators.info('people', props.data.indicators.people).color
+              }`"
+            >
+              {{ indicators.info('people', props.data.indicators.people).text }}
+            </p>
+          </div>
+
+          <div class="ranking-line">
+            <p>Infrastructures</p>
+            <p
+              :style="`color: ${
+                indicators.info(
+                  'infrastructures',
+                  props.data.indicators.infrastructures
+                ).color
+              }`"
+            >
+              {{
+                indicators.info(
+                  'infrastructures',
+                  props.data.indicators.infrastructures
+                ).text
+              }}
+            </p>
+          </div>
+
+          <div class="ranking-line">
+            <p>Protected areas</p>
+            <p
+              :style="`color: ${
+                indicators.info('protected', props.data.indicators.protected)
+                  .color
+              }`"
+            >
+              {{
+                indicators.info('protected', props.data.indicators.protected)
+                  .text
+              }}
+            </p>
+          </div>
+
+          <div class="ranking-line">
+            <p>Size</p>
+            <p
+              :style="`color: ${
+                indicators.info('size', props.data.indicators.size).color
+              }`"
+            >
+              {{ indicators.info('size', props.data.indicators.size).text }}
+            </p>
+          </div>
+
+          <div class="ranking-line">
+            <p>Terrain</p>
+            <p
+              :style="`color: ${
+                indicators.info('upland', props.data.indicators.upland).color
+              }`"
+            >
+              {{ indicators.info('upland', props.data.indicators.upland).text }}
+            </p>
+          </div>
+        </v-card-text>
+      </div>
+
+      <div class="little-box">
+        <v-card-subtitle> Fire size </v-card-subtitle>
+        <v-card-text> {{ props.data.effis_data.area }} ha </v-card-text>
+      </div>
+
+      <div class="little-box">
+        <v-card-subtitle> Initial date / Last update </v-card-subtitle>
+        <v-card-text>
+          {{ props.data.effis_data.initialdate.slice(0, 10) }} /
+          {{ props.data.effis_data.finaldate.slice(0, 10) }}
+        </v-card-text>
+      </div>
+
+      <div class="little-box">
+        <v-card-subtitle> Coordinates </v-card-subtitle>
+        <v-card-text>
+          [{{ props.data.effis_data.centroid.coordinates[0].toFixed(6) }},
+          {{ props.data.effis_data.centroid.coordinates[1].toFixed(6) }}]
+        </v-card-text>
+      </div>
+
+      <div class="little-box">
+        <v-card-subtitle> Fire perimeter </v-card-subtitle>
+        <v-card-text> -- </v-card-text>
+      </div>
+
+      <div class="little-box">
+        <v-card-subtitle> PDF Report </v-card-subtitle>
+        <v-card-text> <v-btn size="small">Download</v-btn> </v-card-text>
+      </div>
+
+      <div class="mid-box">
+        <v-card-subtitle> Distance from bases </v-card-subtitle>
+        <v-card-text> </v-card-text>
+      </div>
     </v-card>
   </div>
 </template>
@@ -44,5 +195,25 @@ const fires = useFires();
   border-radius: 4px;
   z-index: 1000;
   margin-right: 1rem;
+}
+
+.little-box {
+  margin-top: 0.5rem;
+  height: 80px;
+  max-height: 80px;
+  min-height: 80px;
+}
+
+.mid-box {
+  margin-top: 0.5rem;
+  height: 150px;
+  max-height: 150px;
+  min-height: 150px;
+}
+
+.ranking-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>

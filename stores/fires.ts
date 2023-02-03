@@ -141,6 +141,7 @@ interface EffisData {
   admlvl2: string;
   admlvl3: string;
   admlvl4: string;
+  admlvl5: string;
   agricolture_percent: number;
   area: number;
   artificial_percent: number;
@@ -149,7 +150,7 @@ interface EffisData {
   centroid: Shape;
   coniferous_forest_percent: number;
   country: string;
-  filldate: string;
+  finaldate: string;
   id: number;
   initialdate: string;
   iso2: string;
