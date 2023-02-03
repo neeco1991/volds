@@ -1,18 +1,12 @@
 <script setup lang="ts">
-import { Fire, useFires } from '~~/stores/fires';
+import { useFires } from '~~/stores/fires';
 const fires = useFires();
-
-const comparedFires = ref<Fire[]>([]);
-
-onMounted(() => {
-  comparedFires.value = fires.getCompare;
-});
 </script>
 
 <template>
   <div id="comparator">
     <div id="scroller">
-      <ComparedFire v-for="fire in comparedFires" :data="fire"></ComparedFire>
+      <ComparedFire v-for="fire in fires.compare" :data="fire"></ComparedFire>
     </div>
   </div>
 </template>

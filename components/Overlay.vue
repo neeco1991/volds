@@ -4,7 +4,6 @@ import { useMap } from '~~/stores/map';
 
 const settings = useSettings();
 const map = useMap();
-const router = useRouter();
 
 const center = ref([10, 47]);
 const projection = ref('EPSG:4326');
@@ -75,15 +74,7 @@ const data = {
 };
 
 onMounted(async () => {
-  const { query } = await router.currentRoute.value;
-  if (query.type) {
-    const type = data.types.find((t) => t.id === query.type);
-    if (type) {
-      map.setUrl(type.url);
-    }
-  } else {
-    map.setUrl(data.types[0].url);
-  }
+  map.init(data.types);
 });
 </script>
 

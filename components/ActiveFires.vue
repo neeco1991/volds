@@ -4,7 +4,6 @@ import { DatePicker } from 'v-calendar';
 import { useTheme } from '~~/stores/theme';
 
 const fires = useFires();
-const router = useRouter();
 const theme = useTheme();
 
 const date = ref<{ start: Date; end: Date }>({
@@ -16,57 +15,23 @@ let area = ref<number>(30);
 
 const showFires = () => {
   fires.toggleActive();
+};
 
-  if (fires.isActive) {
-    fires.fetchList(
-      date.value.start.toISOString().slice(0, 10),
-      date.value.end.toISOString().slice(0, 10),
-      area.value
-    );
-  }
+const setDates = () => {
+  fires.setDates(date.value.start, date.value.end);
+};
 
-  updateQueryParams();
+const setArea = () => {
+  fires.setArea(area.value);
 };
 
 onMounted(() => {
-  const { query } = router.currentRoute.value;
-
-  if (query.firesFrom && query.firesTo) {
-    date.value.start = new Date(query.firesFrom as string);
-    date.value.end = new Date(query.firesTo as string);
-  }
-
-  if (query.firesArea) {
-    area.value = Number(query.firesArea);
-  }
+  date.value = {
+    start: fires.getFiresFrom,
+    end: fires.getFiresTo,
+  };
+  area.value = fires.getFiresArea;
 });
-
-const updateQueryParams = () => {
-  const { query } = router.currentRoute.value;
-
-  const firesFrom = date.value.start.toISOString().slice(0, 10);
-  const firesTo = date.value.end.toISOString().slice(0, 10);
-  const firesArea = area.value;
-
-  if (
-    fires.isActive &&
-    (firesFrom !== query.firesFrom ||
-      firesTo !== query.firesTo ||
-      firesArea !== Number(query.firesArea))
-  ) {
-    fires.fetchList(firesFrom, firesTo, firesArea);
-  }
-
-  router.push({
-    query: {
-      ...query,
-      fires: fires.isActive.toString(),
-      firesFrom,
-      firesTo,
-      firesArea,
-    },
-  });
-};
 </script>
 
 <template>
@@ -83,7 +48,7 @@ const updateQueryParams = () => {
     is-expanded
     is-range
     v-model="date"
-    @click.stop="updateQueryParams()"
+    @click.stop="setDates()"
   ></DatePicker>
 
   <div
@@ -99,6 +64,6 @@ const updateQueryParams = () => {
     :step="1"
     :color="theme.isDark ? 'white' : 'black'"
     :thumb-size="0"
-    @click.stop="updateQueryParams()"
+    @click.stop="setArea()"
   ></v-slider>
 </template>

@@ -1,26 +1,12 @@
 <script setup lang="ts">
 import { useFires } from '~~/stores/fires';
-import { useMap } from '~~/stores/map';
+// import { useRouterStore } from '~~/stores/routerStore';
 
-const router = useRouter();
+// const r = useRouterStore();
 const fires = useFires();
-const map = useMap();
 
 onMounted(async () => {
-  const { query } = await router.currentRoute.value;
-  if (
-    query.fires === 'true' &&
-    query.firesFrom &&
-    query.firesTo &&
-    query.firesArea
-  ) {
-    fires.setActive(true);
-    await fires.fetchList(
-      query.firesFrom as string,
-      query.firesTo as string,
-      Number(query.firesArea)
-    );
-  }
+  await fires.init();
 });
 </script>
 

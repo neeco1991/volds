@@ -1,5 +1,4 @@
-// @ts-check
-// plugins/openlayers.js
+// plugins/openlayers.ts
 import { defineNuxtPlugin } from '#app';
 import OpenLayers from 'vue3-openlayers';
 

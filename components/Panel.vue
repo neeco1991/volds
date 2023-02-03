@@ -80,7 +80,7 @@ const types = ref(
 const mapUrl = ref('');
 
 const setMapType = (type: MapType) => {
-  map.setUrl(type.url);
+  map.setType(type);
   mapUrl.value = type.url;
   const query = router.currentRoute.value.query;
 

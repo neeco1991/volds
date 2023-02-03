@@ -3,29 +3,12 @@ import { Fire } from '~~/stores/fires';
 import { useFires } from '~~/stores/fires';
 import indicators from '~~/lib/indicators';
 const fires = useFires();
-const router = useRouter();
 
 const props = defineProps<{ data: Fire }>();
 const style = ref<string>('');
 
 // green, darker yellow, red
 const rankingColors = ['#4caf50', '#ffeb3b', '#f44336'];
-const indicatorColors = ['', '#ffeb3b', '#f44336'];
-const tooltips = {
-  people: ['Not affected', 'May be affected in the next 24 hours', 'Affected'],
-  infrastructures: [
-    'Not affected',
-    'May be affected in the next 24 hours',
-    'Affected',
-  ],
-  protected: [
-    'Not affected',
-    'May be affected in the next 24 hours',
-    'Affected',
-  ],
-  size: ['Less than 100 ha', 'Between 100 and 500 ha', 'More than 500 ha'],
-  upland: ['Flat', 'Hilly', 'Mountainous'],
-};
 
 onMounted(() => {
   style.value = `margin-bottom: 0.5rem; border-color: ${
@@ -35,16 +18,6 @@ onMounted(() => {
 
 const compare = async () => {
   fires.toggleCompare(props.data);
-  const { query } = await router.currentRoute.value;
-
-  const compare = fires.getCompare.map((fire) => fire.id.toString());
-
-  router.push({
-    query: {
-      ...query,
-      compare,
-    },
-  });
 };
 </script>
 
@@ -85,8 +58,13 @@ const compare = async () => {
       style="width: 100%; display: flex; justify-content: space-between"
     >
       <div>
-        <v-btn size="small" variant="outlined" @click="compare()">
-          {{ '&larr; Details' }}
+        <v-btn
+          size="small"
+          variant="outlined"
+          :color="fires.isCompared(data.id) ? 'error' : ''"
+          @click="compare()"
+        >
+          {{ fires.isCompared(data.id) ? 'Remove &rarr;' : '&larr; Details' }}
         </v-btn>
       </div>
 
