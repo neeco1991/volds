@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { bases, Distances } from '~~/lib/bases';
 import indicators from '~~/lib/indicators';
 import { Fire, useFires } from '~~/stores/fires';
 import { useTheme } from '~~/stores/theme';
@@ -12,6 +13,26 @@ const rankingDesc = [
 const props = defineProps<{ data: Fire }>();
 const theme = useTheme();
 const fires = useFires();
+
+const forecast = ref<Fire | null>(null);
+const loadingForecast = ref(true);
+const errorForecast = ref(false);
+
+onMounted(async () => {
+  try {
+    const response = await fetch(
+      `https://api.wild-fire.eu/rest/firespread/forecast/${props.data.id.toString()}/`
+    );
+
+    forecast.value = await response.json();
+
+    loadingForecast.value = false;
+    errorForecast.value = false;
+  } catch (e) {
+    loadingForecast.value = false;
+    errorForecast.value = true;
+  }
+});
 </script>
 
 <template>
@@ -170,9 +191,16 @@ const fires = useFires();
         </v-card-text>
       </div>
 
-      <div class="little-box">
+      <div class="big-box">
         <v-card-subtitle> Fire perimeter </v-card-subtitle>
-        <v-card-text> -- </v-card-text>
+        <v-card-text style="height: 100%; width: 100%">
+          <PerimeterChart
+            :center="props.data.effis_data.centroid.coordinates as [number, number]"
+            :loading="false"
+            :error="false"
+            :perimeter="props.data.effis_data.shape.coordinates"
+          ></PerimeterChart>
+        </v-card-text>
       </div>
 
       <div class="little-box">
@@ -182,7 +210,59 @@ const fires = useFires();
 
       <div class="mid-box">
         <v-card-subtitle> Distance from bases </v-card-subtitle>
-        <v-card-text> </v-card-text>
+        <v-card-text>
+          <div style="display: flex; flex-wrap: nowrap">
+            <b style="width: 80%">Base</b>
+            <b style="width: 80%">Distance [km]</b>
+            <b style="width: 100%">Est. Time [hh:mm]</b>
+          </div>
+          <div v-for="base in bases" style="display: flex">
+            <p style="width: 80%">{{ base.name }}</p>
+            <p style="width: 80%">
+              {{
+                Distances.distance(
+                  base.coordinates,
+                  props.data.effis_data.centroid.coordinates as [number, number]
+                )
+              }}
+            </p>
+            <p style="width: 100%">
+              {{
+                Distances.estimatedTime(
+                  Distances.distance(
+                    base.coordinates,
+                    props.data.effis_data.centroid.coordinates as [
+                      number,
+                      number
+                    ]
+                  )
+                ).toFixed(0)
+              }}
+            </p>
+          </div>
+        </v-card-text>
+      </div>
+
+      <div class="chart-box">
+        <v-card-subtitle>Fire weather index</v-card-subtitle>
+        <v-card-text>
+          <FWI
+            :coordinates="props.data.effis_data.centroid.coordinates as [number, number]"
+            :from="props.data.effis_data.initialdate.slice(0, 10)"
+            :to="props.data.effis_data.finaldate.slice(0, 10)"
+          ></FWI>
+        </v-card-text>
+      </div>
+
+      <div class="chart-box">
+        <v-card-subtitle>Evolution of perimeter length</v-card-subtitle>
+        <v-card-text>
+          <PerimeterEvolution
+            :loading="loadingForecast"
+            :error="errorForecast"
+            :data="forecast"
+          ></PerimeterEvolution>
+        </v-card-text>
       </div>
     </v-card>
   </div>
@@ -209,6 +289,20 @@ const fires = useFires();
   height: 150px;
   max-height: 150px;
   min-height: 150px;
+}
+
+.big-box {
+  margin-top: 0.5rem;
+  height: 300px;
+  max-height: 300px;
+  min-height: 300px;
+}
+
+.chart-box {
+  margin-top: 0.5rem;
+  height: 250px;
+  max-height: 250px;
+  min-height: 250px;
 }
 
 .ranking-line {

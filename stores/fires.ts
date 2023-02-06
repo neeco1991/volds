@@ -127,7 +127,7 @@ interface Response {
 
 export interface Fire {
   date: string;
-  dss_date: any[];
+  dss_data: any[];
   effis_data: EffisData;
   fire_id: number;
   id: number;
