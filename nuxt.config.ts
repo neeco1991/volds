@@ -25,5 +25,11 @@ export default defineNuxtConfig({
   ssr: false,
   experimental: {
     payloadExtraction: false,
+  },
+  runtimeConfig: {
+    public: {
+      baseURL: 'https://effis.jrc.ec.europa.eu/apps/dss.test',
+      // USAGE: $config.public.baseURL
+   }
   }
 });
