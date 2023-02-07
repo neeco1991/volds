@@ -24,18 +24,9 @@ export default defineNuxtConfig({
   },
   ssr: false,
   experimental: {
-    payloadExtraction: false,
+    payloadExtraction: true,
   },
-  router: {
-    base:
-      process.env.NODE_ENV === 'development'
-        ? '/'
-        : '/apps/dss.test/',
-  },
-  runtimeConfig: {
-    public: {
-      baseURL: 'https://effis.jrc.ec.europa.eu/apps/dss.test',
-      // USAGE: $config.public.baseURL
-   }
+  app: {
+    baseURL: '/apps/dss.test/',
   }
 });
