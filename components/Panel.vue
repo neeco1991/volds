@@ -6,6 +6,7 @@ import Marker from './Marker.vue';
 import { useTheme } from '../stores/theme';
 import { useSettings } from '../stores/settings';
 import { useMap } from '~~/stores/map';
+import { useFires } from '~~/stores/fires';
 
 export interface SimpleOverlayType {
   title: string;
@@ -48,6 +49,7 @@ const theme = useTheme();
 const router = useRouter();
 const settings = useSettings();
 const map = useMap();
+const fires = useFires();
 
 const overlays = ref(
   (props.data.overlays || []).map((element: SimpleOverlayType) => ({
@@ -245,11 +247,12 @@ onMounted(() => {
       ></Tile>
     </div>
 
-    <div v-for="(marker, index) in markers">
+    <div v-for="(fire, index) in fires.list">
       <Marker
-        v-if="marker.active"
-        :key="index.toString()"
-        :position="marker.position"
+        v-if="fires.active"
+        :key="fire.id.toString()"
+        :position="fire.effis_data.centroid.coordinates as [number, number]"
+        :id="fire.id.toString()"
       ></Marker>
     </div>
   </div>

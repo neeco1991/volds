@@ -264,6 +264,73 @@ onMounted(async () => {
           ></PerimeterEvolution>
         </v-card-text>
       </div>
+
+      <div class="extra-big-box">
+        <v-card-subtitle>Fire perimeter evolution forecast</v-card-subtitle>
+        <v-card-text style="height: 95%">
+          <ForecastChart
+            :loading="loadingForecast"
+            :error="errorForecast"
+            :data="forecast"
+          ></ForecastChart>
+        </v-card-text>
+      </div>
+
+      <div class="big-box">
+        <v-card-subtitle>Forecast</v-card-subtitle>
+        <v-card-text class="scrollable" style="flex: 1">
+          <div
+            v-if="
+              !loadingForecast &&
+              forecast?.dss_data?.length &&
+              forecast.dss_data.length > 1
+            "
+            style="display: flex; flex-direction: column"
+          >
+            <div style="display: flex">
+              <b style="width: 100%">Date/time</b>
+              <b style="width: 100%">Pop.</b>
+              <b style="width: 100%">Built up. [m<sup>2</sup>]</b>
+            </div>
+            <div v-for="f in (forecast as Fire).dss_data.slice(12)">
+              <div style="display: flex">
+                <p style="width: 100%">
+                  {{ f.date.slice(5, 10) }} {{ f.forecast.Hour.toString() }}
+                </p>
+                <p style="width: 100%">{{ f.forecast.pop_total.toString() }}</p>
+                <p style="width: 100%">
+                  {{ f.forecast.built_up_area.toString() }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <v-card
+            v-else
+            color="grey lighten-4"
+            style="
+              height: 100%;
+              height: 100%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            "
+          >
+            <v-card-item>
+              <div class="text-h6">No data</div>
+            </v-card-item>
+          </v-card>
+        </v-card-text>
+      </div>
+
+      <div class="big-box">
+        <v-card-subtitle>Landcover damages</v-card-subtitle>
+        <v-card-text>
+          <LandcoverDamages
+            class="scrollable"
+            :data="props.data"
+          ></LandcoverDamages>
+        </v-card-text>
+      </div>
     </v-card>
   </div>
 </template>
@@ -296,6 +363,15 @@ onMounted(async () => {
   height: 300px;
   max-height: 300px;
   min-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.extra-big-box {
+  margin-top: 0.5rem;
+  height: 500px;
+  max-height: 500px;
+  min-height: 500px;
 }
 
 .chart-box {
@@ -303,6 +379,23 @@ onMounted(async () => {
   height: 250px;
   max-height: 250px;
   min-height: 250px;
+}
+
+.scrollable {
+  overflow-y: scroll;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 0.3em;
+  background-color: transparent;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background-color: #000000;
+}
+
+.scrollable::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
 }
 
 .ranking-line {

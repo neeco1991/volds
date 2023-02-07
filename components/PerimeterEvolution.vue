@@ -34,7 +34,6 @@ const mapData = () => ({
     v-else
     color="grey lighten-4"
     class="w-full h-full mx-auto"
-    max-width="344"
     style="height: 160px"
   >
     <v-card-item style="height: 100%">

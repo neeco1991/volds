@@ -142,7 +142,7 @@ interface EffisData {
   admlvl3: string;
   admlvl4: string;
   admlvl5: string;
-  agricolture_percent: number;
+  agriculture_percent: number;
   area: number;
   artificial_percent: number;
   bbox: [number, number, number, number];
@@ -159,7 +159,7 @@ interface EffisData {
   natura2k_percent: number;
   other_natural_percent: number;
   other_percent: number;
-  slerophillous_vegetation_percent: number;
+  sclerophillous_vegetation_percent: number;
   shape: Shape;
   transitional_vegetation_percent: number;
   updated: string;
