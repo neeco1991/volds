@@ -23,4 +23,7 @@ export default defineNuxtConfig({
     },
   },
   ssr: false,
+  experimental: {
+    payloadExtraction: false,
+  }
 });

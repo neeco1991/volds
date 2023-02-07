@@ -3,6 +3,7 @@
 - Clone the repository
 - Run `yarn` to install dependencies
 - Run `yarn dev` to start the development server
+- Run `yarn generate` to build client-side only version.
 
 # Stack
 
