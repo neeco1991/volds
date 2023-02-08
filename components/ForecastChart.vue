@@ -2,32 +2,23 @@
 import { Fire } from '~~/stores/fires';
 
 interface Props {
-  data: Fire | null;
-  loading: boolean;
-  error: boolean;
+  data: Fire;
 }
-
-const center = ref<[number, number]>([0, 0]);
-const perimeter = ref([[[[0, 0]]]]);
-const dss_data = ref<any[]>([]);
-const forecastIndex = ref<number>(0);
 
 const props = defineProps<Props>();
 
-watch(
-  () => props.data,
-  (data) => {
-    if (data && data.dss_data.length > 1) {
-      dss_data.value = data?.dss_data.slice(12);
-      center.value = data.effis_data.centroid.coordinates as [number, number];
-      perimeter.value = getPerimeter();
-    }
-  }
-);
-
 const getPerimeter = () => {
-  return dss_data.value[forecastIndex.value].shape.coordinates;
+  if (!dss_data[forecastIndex.value]) {
+    return [[[[0, 0]]]];
+  }
+  return dss_data[forecastIndex.value].shape.coordinates;
 };
+const dss_data = props.data.dss_data.slice(12);
+const center = props.data.effis_data.centroid.coordinates as [number, number];
+
+const forecastIndex = ref<number>(0);
+
+const perimeter = ref(getPerimeter());
 
 const increment = (value: number) => {
   forecastIndex.value += value;
@@ -35,8 +26,8 @@ const increment = (value: number) => {
     forecastIndex.value = 0;
     return;
   }
-  if (forecastIndex.value > dss_data.value.length - 1) {
-    forecastIndex.value = dss_data.value.length - 1;
+  if (forecastIndex.value > dss_data.length - 1) {
+    forecastIndex.value = dss_data.length - 1;
     return;
   }
   perimeter.value = getPerimeter();
@@ -45,23 +36,23 @@ const increment = (value: number) => {
 
 <template>
   <div
-    v-if="!loading && !error && dss_data.length > 1"
+    v-if="dss_data.length > 1"
     style="display: flex; flex-direction: column; height: 100%"
   >
     <div style="flex-grow: 1">
       <PerimeterChart
         :center="center"
         :perimeter="perimeter"
-        :loading="loading"
-        :error="error"
+        :loading="false"
+        :error="false"
       ></PerimeterChart>
     </div>
-    <div v-if="!loading && !error" class="controls">
+    <div class="controls">
       <v-btn variant="outlined" @click="increment(-1)">&larr;</v-btn>
       <p>{{ forecastIndex + 1 }} / {{ dss_data.length }}</p>
       <v-btn variant="outlined" @click="increment(1)">&rarr;</v-btn>
     </div>
-    <div v-if="!loading && !error" class="forecast-table">
+    <div class="forecast-table">
       <div class="forecast-table__row">
         <b>Forecast time</b>
         <p>
@@ -87,19 +78,7 @@ const increment = (value: number) => {
       </div>
     </div>
   </div>
-  <v-card
-    v-else-if="!loading && !error"
-    color="grey lighten-4"
-    style="
-      height: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    "
-  >
-    <v-card-item class="text-h6"> No data </v-card-item>
-  </v-card>
+  <NoData v-else></NoData>
 </template>
 
 <style scoped>

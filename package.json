@@ -3,7 +3,6 @@
   "scripts": {
     "prebuild": "nvm use 18.13.0",
     "build": "nuxt build",
-    "predev": "nvm use 18.13.0",
     "dev": "nuxt dev",
     "pregenerate": "nvm use 18.13.0",
     "generate": "nuxt generate",

@@ -13,26 +13,6 @@ const rankingDesc = [
 const props = defineProps<{ data: Fire }>();
 const theme = useTheme();
 const fires = useFires();
-
-const forecast = ref<Fire | null>(null);
-const loadingForecast = ref(true);
-const errorForecast = ref(false);
-
-onMounted(async () => {
-  try {
-    const response = await fetch(
-      `https://api.wild-fire.eu/rest/firespread/forecast/${props.data.id.toString()}/`
-    );
-
-    forecast.value = await response.json();
-
-    loadingForecast.value = false;
-    errorForecast.value = false;
-  } catch (e) {
-    loadingForecast.value = false;
-    errorForecast.value = true;
-  }
-});
 </script>
 
 <template>
@@ -77,7 +57,7 @@ onMounted(async () => {
         </v-card-subtitle>
       </div>
 
-      <div class="little-box">
+      <div class="box little-box">
         <v-card-subtitle> Location </v-card-subtitle>
         <v-card-text>{{
           [
@@ -91,14 +71,14 @@ onMounted(async () => {
         }}</v-card-text>
       </div>
 
-      <div class="little-box">
+      <div class="box little-box">
         <v-card-subtitle> Ranking </v-card-subtitle>
         <v-card-text :style="`color: ${rankingColors[props.data.ranking]}`">{{
           rankingDesc[props.data.ranking]
         }}</v-card-text>
       </div>
 
-      <div class="mid-box">
+      <div class="box mid-box">
         <v-card-subtitle> Ranking indicators </v-card-subtitle>
         <v-card-text>
           <div class="ranking-line">
@@ -170,12 +150,12 @@ onMounted(async () => {
         </v-card-text>
       </div>
 
-      <div class="little-box">
+      <div class="box little-box">
         <v-card-subtitle> Fire size </v-card-subtitle>
         <v-card-text> {{ props.data.effis_data.area }} ha </v-card-text>
       </div>
 
-      <div class="little-box">
+      <div class="box little-box">
         <v-card-subtitle> Initial date / Last update </v-card-subtitle>
         <v-card-text>
           {{ props.data.effis_data.initialdate.slice(0, 10) }} /
@@ -183,7 +163,7 @@ onMounted(async () => {
         </v-card-text>
       </div>
 
-      <div class="little-box">
+      <div class="box little-box">
         <v-card-subtitle> Coordinates </v-card-subtitle>
         <v-card-text>
           [{{ props.data.effis_data.centroid.coordinates[0].toFixed(6) }},
@@ -191,7 +171,7 @@ onMounted(async () => {
         </v-card-text>
       </div>
 
-      <div class="big-box">
+      <div class="box big-box">
         <v-card-subtitle> Fire perimeter </v-card-subtitle>
         <v-card-text style="height: 100%; width: 100%">
           <PerimeterChart
@@ -203,12 +183,12 @@ onMounted(async () => {
         </v-card-text>
       </div>
 
-      <div class="little-box">
+      <div class="box little-box">
         <v-card-subtitle> PDF Report </v-card-subtitle>
         <v-card-text> <v-btn size="small">Download</v-btn> </v-card-text>
       </div>
 
-      <div class="mid-box">
+      <div class="box mid-box">
         <v-card-subtitle> Distance from bases </v-card-subtitle>
         <v-card-text>
           <div style="display: flex; flex-wrap: nowrap">
@@ -243,7 +223,7 @@ onMounted(async () => {
         </v-card-text>
       </div>
 
-      <div class="chart-box">
+      <div class="box chart-box">
         <v-card-subtitle>Fire weather index</v-card-subtitle>
         <v-card-text>
           <FWI
@@ -254,37 +234,25 @@ onMounted(async () => {
         </v-card-text>
       </div>
 
-      <div class="chart-box">
+      <div class="box chart-box">
         <v-card-subtitle>Evolution of perimeter length</v-card-subtitle>
         <v-card-text>
-          <PerimeterEvolution
-            :loading="loadingForecast"
-            :error="errorForecast"
-            :data="forecast"
-          ></PerimeterEvolution>
+          <PerimeterEvolution :data="data"></PerimeterEvolution>
         </v-card-text>
       </div>
 
-      <div class="extra-big-box">
+      <div class="box extra-big-box">
         <v-card-subtitle>Fire perimeter evolution forecast</v-card-subtitle>
-        <v-card-text style="height: 95%">
-          <ForecastChart
-            :loading="loadingForecast"
-            :error="errorForecast"
-            :data="forecast"
-          ></ForecastChart>
+        <v-card-text>
+          <ForecastChart :data="data"></ForecastChart>
         </v-card-text>
       </div>
 
-      <div class="big-box">
+      <div class="box big-box">
         <v-card-subtitle>Forecast</v-card-subtitle>
         <v-card-text class="scrollable" style="flex: 1">
           <div
-            v-if="
-              !loadingForecast &&
-              forecast?.dss_data?.length &&
-              forecast.dss_data.length > 1
-            "
+            v-if="data.dss_data.length > 1"
             style="display: flex; flex-direction: column"
           >
             <div style="display: flex">
@@ -292,7 +260,7 @@ onMounted(async () => {
               <b style="width: 100%">Pop.</b>
               <b style="width: 100%">Built up. [m<sup>2</sup>]</b>
             </div>
-            <div v-for="f in (forecast as Fire).dss_data.slice(12)">
+            <div v-for="f in data.dss_data.slice(12)">
               <div style="display: flex">
                 <p style="width: 100%">
                   {{ f.date.slice(5, 10) }} {{ f.forecast.Hour.toString() }}
@@ -304,25 +272,11 @@ onMounted(async () => {
               </div>
             </div>
           </div>
-          <v-card
-            v-else
-            color="grey lighten-4"
-            style="
-              height: 100%;
-              height: 100%;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            "
-          >
-            <v-card-item>
-              <div class="text-h6">No data</div>
-            </v-card-item>
-          </v-card>
+          <NoData v-else></NoData>
         </v-card-text>
       </div>
 
-      <div class="big-box">
+      <div class="box big-box">
         <v-card-subtitle>Landcover damages</v-card-subtitle>
         <v-card-text>
           <LandcoverDamages
@@ -344,6 +298,15 @@ onMounted(async () => {
   margin-right: 1rem;
 }
 
+.box {
+  display: flex;
+  flex-direction: column;
+}
+
+.box > v-card-text {
+  flex: 1;
+}
+
 .little-box {
   margin-top: 0.5rem;
   height: 80px;
@@ -363,8 +326,6 @@ onMounted(async () => {
   height: 300px;
   max-height: 300px;
   min-height: 300px;
-  display: flex;
-  flex-direction: column;
 }
 
 .extra-big-box {

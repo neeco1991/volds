@@ -2,13 +2,11 @@
 import { Fire } from '~~/stores/fires';
 
 const props = defineProps<{
-  data: Fire | null;
-  loading: boolean;
-  error: boolean;
+  data: Fire;
 }>();
 
 const mapData = () => ({
-  labels: (props.data?.dss_data || [])
+  labels: (props.data.dss_data || [])
     .filter((_, index) => index > 11)
     .map(({ date, duration_minutes }) => duration_minutes.toString()),
   datasets: [
@@ -25,29 +23,10 @@ const mapData = () => ({
 
 <template>
   <LineChart
-    v-if="props.data?.dss_data && props.data.dss_data.length > 1"
-    :loaded="!props.loading"
-    :error="props.error"
+    v-if="props.data.dss_data && props.data.dss_data.length > 1"
+    :loaded="true"
+    :error="false"
     :data="mapData()"
   ></LineChart>
-  <v-card
-    v-else
-    color="grey lighten-4"
-    class="w-full h-full mx-auto"
-    style="height: 160px"
-  >
-    <v-card-item style="height: 100%">
-      <div
-        class="text-h6"
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-        "
-      >
-        No data
-      </div>
-    </v-card-item>
-  </v-card>
+  <NoData v-else></NoData>
 </template>

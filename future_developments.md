@@ -1,0 +1,4 @@
+- ordering by size
+- showing only selected rankings
+- options on layers (opacity, daterange...)
+-

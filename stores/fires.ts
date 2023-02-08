@@ -39,9 +39,12 @@ export const useFires = defineStore('fires', {
       if (compare && !Array.isArray(compare)) {
         compare = [compare];
       }
-      this.compare = this.list.filter((f) =>
-        (query.compare || []).includes(f.id.toString())
-      );
+      for (const cmp of compare || []) {
+        const index = this.list.findIndex((f) => f.id.toString() === cmp);
+        if (index !== -1) {
+          await this.toggleCompare(this.list[index]);
+        }
+      }
       this.pushOnQps();
     },
     isCompared(id: number) {
@@ -72,13 +75,19 @@ export const useFires = defineStore('fires', {
       this.active = target;
       this.pushOnQps();
     },
-    toggleCompare(fire: Fire) {
+    async toggleCompare(fire: Fire) {
       const index = this.compare.findIndex((f) => f.id === fire.id);
       if (index === -1) {
+        const dssResponse = await fetch(
+          `https://api.wild-fire.eu/rest/firespread/forecast/${fire.id.toString()}/`
+        );
+        const dss_data = (await dssResponse.json()).dss_data;
+        fire.dss_data = dss_data || [];
         this.compare.push(fire);
       } else {
         this.compare.splice(index, 1);
       }
+      console.log(this.compare);
       this.pushOnQps();
     },
     async fetchList() {

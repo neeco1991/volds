@@ -16,6 +16,16 @@ onMounted(() => {
   }`;
 });
 
+watch(
+  () => props,
+  () => {
+    console.log('watch');
+    style.value = `margin-bottom: 0.5rem; border-color: ${
+      rankingColors[props.data.ranking]
+    }`;
+  }
+);
+
 const compare = async () => {
   fires.toggleCompare(props.data);
 };
