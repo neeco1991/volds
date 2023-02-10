@@ -5,26 +5,9 @@ import indicators from '~~/lib/indicators';
 const fires = useFires();
 
 const props = defineProps<{ data: Fire }>();
-const style = ref<string>('');
 
 // green, darker yellow, red
 const rankingColors = ['#4caf50', '#ffeb3b', '#f44336'];
-
-onMounted(() => {
-  style.value = `margin-bottom: 0.5rem; border-color: ${
-    rankingColors[props.data.ranking]
-  }`;
-});
-
-watch(
-  () => props,
-  () => {
-    console.log('watch');
-    style.value = `margin-bottom: 0.5rem; border-color: ${
-      rankingColors[props.data.ranking]
-    }`;
-  }
-);
 
 const compare = async () => {
   fires.toggleCompare(props.data);
@@ -33,7 +16,9 @@ const compare = async () => {
 
 <template>
   <v-card
-    :style="style"
+    :style="`margin-bottom: 0.5rem; border-color: ${
+      rankingColors[props.data.ranking]
+    }`"
     class="mx-auto"
     max-width="344"
     variant="outlined"
