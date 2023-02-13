@@ -23,6 +23,7 @@ const orderBy = (firelist: Fire[], order: string) => {
   <div id="fires" v-if="fires.active">
     <v-card
       class="mx-auto rounded-t-lg"
+      style="height: 100%; display: flex; flex-direction: column"
       :color="theme.primary"
       :loading="fires.isLoading"
     >
@@ -48,15 +49,14 @@ const orderBy = (firelist: Fire[], order: string) => {
             <v-icon icon="mdi-close" size="x-large"></v-icon>
           </v-btn>
         </div>
+
+        <v-divider></v-divider>
       </template>
 
-      <div style="margin-bottom: 1.6rem">
-        <fire-card
-          v-for="fire in orderBy(fires.list, 'date')"
-          :data="fire"
-        ></fire-card>
+      <div id="scroller">
+        <fire-card v-for="fire in fires.getList" :data="fire"></fire-card>
+        <empty-fires v-if="fires.count === 0"></empty-fires>
       </div>
-      <empty-fires v-if="fires.count === 0"></empty-fires>
     </v-card>
   </div>
 </template>
@@ -64,14 +64,17 @@ const orderBy = (firelist: Fire[], order: string) => {
 <style scoped>
 #fires {
   width: 400px;
+  z-index: 1000;
+}
+
+#scroller {
   overflow-y: scroll;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none;
   border-radius: inherit;
-  z-index: 1000;
 }
 
-#fires::-webkit-scrollbar {
+#scroller::-webkit-scrollbar {
   display: none;
 }
 </style>

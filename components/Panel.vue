@@ -247,7 +247,7 @@ onMounted(() => {
       ></Tile>
     </div>
 
-    <div v-for="(fire, index) in fires.list">
+    <div v-for="fire in fires.getList">
       <Marker
         v-if="fires.active"
         :key="fire.id.toString()"

@@ -11,11 +11,14 @@ export const useFires = defineStore('fires', {
     firesFrom: new Date(),
     firesTo: new Date(),
     firesArea: 30,
+    activeRankings: [0, 1, 2] as number[],
+    orderBy: '-initialdate' as '-initialdate' | '-area',
   }),
   getters: {
     isActive: ({ active }) => active,
     isLoading: ({ loading }) => loading,
-    getList: ({ list }) => list,
+    getList: ({ list, activeRankings }) =>
+      list.filter((fire) => activeRankings.includes(fire.ranking)),
     getCompare: ({ compare }) => compare,
     getFiresFrom: ({ firesFrom }) => firesFrom,
     getFiresTo: ({ firesTo }) => firesTo,
@@ -45,10 +48,36 @@ export const useFires = defineStore('fires', {
           await this.toggleCompare(this.list[index]);
         }
       }
+      let ranks = query.fireRank;
+      if (ranks && !Array.isArray(ranks)) {
+        ranks = [ranks];
+      }
+      for (const rank of ranks || []) {
+        this.activeRankings.push(parseInt(rank as string));
+      }
+      this.orderBy =
+        query.orderBy === '-initialdate' ? '-initialdate' : '-area';
       this.pushOnQps();
     },
     isCompared(id: number) {
       return this.compare.findIndex((f) => f.id === id) !== -1;
+    },
+    filter(rank: number) {
+      if (this.activeRankings.includes(rank)) {
+        this.activeRankings = this.activeRankings.filter((r) => r !== rank);
+      } else {
+        this.activeRankings.push(rank);
+      }
+      this.pushOnQps();
+    },
+    isRankActive(rank: number) {
+      return this.activeRankings.includes(rank);
+    },
+    setOrderBy(orderBy: '-initialdate' | '-area') {
+      this.orderBy = orderBy;
+      this.pushOnQps();
+
+      this.fetchList();
     },
     setDates(from: Date, to: Date) {
       if (from !== this.firesFrom || to !== this.firesTo) {
@@ -95,7 +124,7 @@ export const useFires = defineStore('fires', {
       const from = this.firesFrom.toISOString().slice(0, 10);
       const to = this.firesTo.toISOString().slice(0, 10);
       const area = this.firesArea.toString();
-      const url = `${BASE_URL}?finaldate__gte=${from}&finaldate__lte=${to}&area__gte=${area}&ordering=-initialdate`;
+      const url = `${BASE_URL}?finaldate__gte=${from}&finaldate__lte=${to}&area__gte=${area}&ordering=${this.orderBy}`;
       const response = await fetch(url);
       const data = (await response.json()) as Response;
 
@@ -121,6 +150,8 @@ export const useFires = defineStore('fires', {
           firesArea: this.firesArea,
           active: this.active.toString(),
           compare: this.compare.map((f) => f.id),
+          fireRank: this.activeRankings,
+          orderBy: this.orderBy,
         },
       });
     },

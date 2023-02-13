@@ -13,6 +13,8 @@ const date = ref<{ start: Date; end: Date }>({
 
 let area = ref<number>(30);
 
+let order = ref<string>('-initialdate');
+
 const showFires = () => {
   fires.toggleActive();
 };
@@ -24,6 +26,17 @@ const setDates = () => {
 const setArea = () => {
   fires.setArea(area.value);
 };
+
+const filter = (rank: number) => {
+  fires.filter(rank);
+};
+
+watch(
+  () => order.value as '-initialdate' | '-area',
+  (value) => {
+    fires.setOrderBy(value);
+  }
+);
 
 onMounted(() => {
   date.value = {
@@ -66,4 +79,60 @@ onMounted(() => {
     :thumb-size="0"
     @click.stop="setArea()"
   ></v-slider>
+
+  <div
+    style="display: flex; align-items: center; justify-content: space-between"
+  >
+    <p>Filter by fire ranking:</p>
+    <div>
+      <v-btn
+        icon
+        border="none"
+        variant="flat"
+        color="transparent"
+        @click="filter(0)"
+      >
+        <v-icon
+          :color="fires.isRankActive(0) ? '#4caf50' : '#132c14'"
+          icon="mdi-fire"
+        ></v-icon>
+      </v-btn>
+      <v-btn
+        icon
+        border="none"
+        variant="flat"
+        color="transparent"
+        @click="filter(1)"
+      >
+        <v-icon
+          :color="fires.isRankActive(1) ? '#ffeb3b' : '#4e4600'"
+          icon="mdi-fire"
+        ></v-icon>
+      </v-btn>
+      <v-btn
+        icon
+        border="none"
+        variant="flat"
+        color="transparent"
+        @click="filter(2)"
+      >
+        <v-icon
+          :color="fires.isRankActive(2) ? '#f44336' : '#470804'"
+          icon="mdi-fire"
+        ></v-icon>
+      </v-btn>
+    </div>
+  </div>
+
+  <div
+    style="display: flex; align-items: center; justify-content: space-between"
+  >
+    <p>Order by:</p>
+    <div>
+      <v-radio-group hide-details v-model="order" inline>
+        <v-radio label="Date" value="-initialdate"></v-radio>
+        <v-radio label="Size" value="-area"></v-radio>
+      </v-radio-group>
+    </div>
+  </div>
 </template>
