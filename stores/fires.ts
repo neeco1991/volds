@@ -53,7 +53,9 @@ export const useFires = defineStore('fires', {
         ranks = [ranks];
       }
       for (const rank of ranks || []) {
-        this.activeRankings.push(parseInt(rank as string));
+        if (!this.activeRankings.includes(parseInt(rank as string))) {
+          this.activeRankings.push(parseInt(rank as string));
+        }
       }
       this.orderBy =
         query.orderBy === '-initialdate' ? '-initialdate' : '-area';
@@ -116,7 +118,6 @@ export const useFires = defineStore('fires', {
       } else {
         this.compare.splice(index, 1);
       }
-      console.log(this.compare);
       this.pushOnQps();
     },
     async fetchList() {

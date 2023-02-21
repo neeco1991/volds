@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 const props = defineProps<{
   title: string;
   position: [number, number];
@@ -11,15 +9,6 @@ const props = defineProps<{
     fontSize: string;
   };
 }>();
-
-const style = ref(
-  props.style || {
-    background: '#efefef',
-    boxShadow: '0 5px 10px rgb(2 2 2 / 20%)',
-    padding: '10px 20px',
-    fontSize: '16px',
-  }
-);
 </script>
 
 <template>

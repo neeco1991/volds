@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import draggable from 'vuedraggable';
 import OverlayItem from './OverlayItem.vue';
 import Tile from './Tile.vue';
 import Marker from './Marker.vue';
@@ -7,6 +8,7 @@ import { useTheme } from '../stores/theme';
 import { useSettings } from '../stores/settings';
 import { useMap } from '~~/stores/map';
 import { useFires } from '~~/stores/fires';
+import { useLayers } from '~~/stores/layers';
 
 export interface SimpleOverlayType {
   title: string;
@@ -50,16 +52,10 @@ const router = useRouter();
 const settings = useSettings();
 const map = useMap();
 const fires = useFires();
+const layers = useLayers();
 
 const overlays = ref(
   (props.data.overlays || []).map((element: SimpleOverlayType) => ({
-    ...element,
-    active: false,
-  }))
-);
-
-const tiles = ref(
-  (props.data.tiles || []).map((element: TileType) => ({
     ...element,
     active: false,
   }))
@@ -79,6 +75,10 @@ const types = ref(
   }))
 );
 
+const checkMove = (e: any) => {
+  layers.reorder();
+};
+
 const mapUrl = ref('');
 
 const setMapType = (type: MapType) => {
@@ -89,43 +89,19 @@ const setMapType = (type: MapType) => {
   router.push({ query: { ...query, type: type.id } });
 };
 
-const setTilesInUrl = (id: string) => {
-  const query = router.currentRoute.value.query;
-
-  const activeTiles = tiles.value
-    .filter((element) => element.active)
-    .map(({ id }) => id);
-
-  if (!activeTiles.includes(id)) {
-    activeTiles.push(id);
-  } else {
-    activeTiles.splice(activeTiles.indexOf(id), 1);
-  }
-
-  router.push({ query: { ...query, tile: activeTiles } });
-};
-
 const closeSettings = () => {
   settings.toggleActive();
 };
 
 onMounted(() => {
   const query = router.currentRoute.value.query;
-  const { type, tile } = query;
+  const { type } = query;
   if (type) {
     setMapType(
       types.value.find((element) => element.id === type) || types.value[0]
     );
   } else {
     setMapType(types.value[0]);
-  }
-
-  if (tile) {
-    const activeTiles = Array.isArray(tile) ? tile : [tile];
-    tiles.value = tiles.value.map((element) => ({
-      ...element,
-      active: activeTiles.includes(element.id),
-    }));
   }
 });
 </script>
@@ -170,7 +146,7 @@ onMounted(() => {
       >
         <v-expansion-panel-title>Map type</v-expansion-panel-title>
         <v-expansion-panel-text>
-          <v-radio-group v-model="mapUrl">
+          <v-radio-group hide-details v-model="mapUrl">
             <v-radio
               v-for="type in types"
               :key="type.title"
@@ -193,15 +169,32 @@ onMounted(() => {
         </v-expansion-panel-text>
       </v-expansion-panel>
 
-      <v-expansion-panel v-if="tiles.length" :bg-color="theme.primary">
+      <v-expansion-panel v-if="layers.list.length" :bg-color="theme.primary">
         <v-expansion-panel-title>Layers</v-expansion-panel-title>
         <v-expansion-panel-text>
-          <v-switch
-            v-for="tile in tiles"
-            :label="`${tile.title}`"
-            v-model="tile.active"
-            @click="setTilesInUrl(tile.id)"
-          ></v-switch>
+          <!-- <div v-for="layer in layers.list"> -->
+          <draggable
+            item-key="title"
+            class="list-group"
+            v-model="layers.list"
+            @end="checkMove"
+          >
+            <!-- <div class="list-group-item">{{ element.title }}</div> -->
+            <template #item="{ element }">
+              <div style="display: flex; align-items: center">
+                <div style="flex: 1">
+                  <LayerSettings :layer="element"></LayerSettings>
+                </div>
+                <v-icon
+                  icon="mdi-drag-horizontal-variant"
+                  size="x-large"
+                  :color="theme.secondary"
+                  style="cursor: grab"
+                ></v-icon>
+              </div>
+            </template>
+          </draggable>
+          <!-- </div> -->
         </v-expansion-panel-text>
       </v-expansion-panel>
 
@@ -220,12 +213,21 @@ onMounted(() => {
         v-if="data.activeFireSelector"
         :bg-color="theme.primary"
       >
-        <v-expansion-panel-title>Active fires</v-expansion-panel-title>
+        <v-expansion-panel-title>Burnt areas</v-expansion-panel-title>
         <v-expansion-panel-text>
           <ActiveFires></ActiveFires>
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
+
+    <div v-for="fire in fires.getList">
+      <Marker
+        v-if="fires.active"
+        :key="fire.id.toString()"
+        :position="fire.effis_data.centroid.coordinates as [number, number]"
+        :id="fire.id.toString()"
+      ></Marker>
+    </div>
 
     <div v-for="(overlay, index) in overlays">
       <OverlayItem
@@ -236,25 +238,7 @@ onMounted(() => {
       ></OverlayItem>
     </div>
 
-    <div v-for="(tile, index) in tiles">
-      <Tile
-        v-if="tile.active"
-        :key="index.toString()"
-        :url="tile.url"
-        :time="tile.time"
-        :layers="tile.layers"
-        :type="tile.type"
-      ></Tile>
-    </div>
-
-    <div v-for="fire in fires.getList">
-      <Marker
-        v-if="fires.active"
-        :key="fire.id.toString()"
-        :position="fire.effis_data.centroid.coordinates as [number, number]"
-        :id="fire.id.toString()"
-      ></Marker>
-    </div>
+    <Tile v-for="layer in layers.getActives" :data="layer"></Tile>
   </div>
 </template>
 

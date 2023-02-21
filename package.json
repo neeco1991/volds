@@ -21,6 +21,7 @@
     "v-calendar": "^3.0.0-alpha.8",
     "vue-chartjs": "^5.2.0",
     "vue3-openlayers": "^0.1.71",
+    "vuedraggable": "^4.1.0",
     "vuetify": "^3.1.2"
   }
 }

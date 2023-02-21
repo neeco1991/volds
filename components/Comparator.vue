@@ -6,7 +6,11 @@ const fires = useFires();
 <template>
   <div id="comparator">
     <div id="scroller">
-      <ComparedFire v-for="fire in fires.compare" :data="fire"></ComparedFire>
+      <ComparedFire
+        v-for="fire in fires.compare"
+        :data="fire"
+        :key="fire.id.toString()"
+      ></ComparedFire>
     </div>
   </div>
 </template>

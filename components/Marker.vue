@@ -8,7 +8,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <ol-vector-layer>
+  <ol-vector-layer :zIndex="2001">
     <ol-source-vector>
       <ol-feature>
         <ol-geom-point :coordinates="props.position"></ol-geom-point>

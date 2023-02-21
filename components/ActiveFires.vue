@@ -68,7 +68,7 @@ onMounted(() => {
     style="display: flex; justify-content: space-between; align-items: baseline"
   >
     <p style="margin-top: 1rem">Select minimum fire size:</p>
-    <p>{{ area.toString() }} ht</p>
+    <p>{{ area.toString() }} ha</p>
   </div>
   <v-slider
     v-model="area"

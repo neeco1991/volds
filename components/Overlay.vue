@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useSettings } from '~~/stores/settings';
 import { useMap } from '~~/stores/map';
+import { useLayers } from '~~/stores/layers';
 
 const settings = useSettings();
 const map = useMap();
+const layers = useLayers();
 
 const center = ref([10, 47]);
 const projection = ref('EPSG:4326');
@@ -75,6 +77,7 @@ const data = {
 
 onMounted(async () => {
   map.init(data.types);
+  layers.init(data.tiles);
 });
 </script>
 
