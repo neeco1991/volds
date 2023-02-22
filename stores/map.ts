@@ -2,6 +2,8 @@ export const useMap = defineStore('map', {
   state: () => ({
     url: '',
     id: '',
+    center: [10, 47] as [number, number],
+    zoom: 6 as number,
   }),
   getters: {
     getUrl: ({ url }) => url,
@@ -19,6 +21,12 @@ export const useMap = defineStore('map', {
       }
 
       this.setType(types[0]);
+    },
+    setCenter(value: [number, number]) {
+      this.center = value;
+    },
+    setZoom(value: number) {
+      this.zoom = value;
     },
     setType(type: { url: string; id: string }) {
       this.url = type.url;

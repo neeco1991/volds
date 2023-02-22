@@ -3,8 +3,10 @@ import { Fire } from '~~/stores/fires';
 import { useFires } from '~~/stores/fires';
 import indicators from '~~/lib/indicators';
 import { useTheme } from '~~/stores/theme';
+import { useMap } from '~~/stores/map';
 const fires = useFires();
 const theme = useTheme();
+const map = useMap();
 
 const props = defineProps<{ data: Fire }>();
 
@@ -18,19 +20,25 @@ const compare = async () => {
 const selectFire = () => {
   fires.selectFire(props.data.id);
 };
+
+const fireClicked = () => {
+  map.setCenter(props.data.effis_data.centroid.coordinates as [number, number]);
+  map.setZoom(7);
+};
 </script>
 
 <template>
   <v-card
     :style="`margin-bottom: 0.5rem; border-color: ${
       rankingColors[props.data.ranking]
-    }`"
+    }; cursor: pointer;`"
     :class="`mx-auto ${theme.dark ? 'dark-card' : 'ligth-card'}`"
     max-width="344"
     variant="outlined"
     :loading="fires.isLoading"
     :onmouseenter="selectFire"
     :onmouseleave="() => fires.selectFire(undefined)"
+    @click="fireClicked"
   >
     <v-card-item>
       <div
@@ -152,9 +160,9 @@ const selectFire = () => {
 
 <style scoped>
 .v-card.ligth-card:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 .v-card.dark-card:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 </style>

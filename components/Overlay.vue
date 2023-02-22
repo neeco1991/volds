@@ -7,11 +7,6 @@ const settings = useSettings();
 const map = useMap();
 const layers = useLayers();
 
-const center = ref([10, 47]);
-const projection = ref('EPSG:4326');
-const zoom = ref(6);
-const rotation = ref(0);
-
 const data = {
   types: [
     {
@@ -75,6 +70,9 @@ const data = {
   activeFireSelector: true,
 };
 
+const projection = ref('EPSG:4326');
+const rotation = ref(0);
+
 onMounted(async () => {
   map.init(data.types);
   layers.init(data.tiles);
@@ -91,9 +89,9 @@ onMounted(async () => {
 
     <ol-view
       ref="view"
-      :center="center"
+      :center="map.center"
       :rotation="rotation"
-      :zoom="zoom"
+      :zoom="map.zoom"
       :projection="projection"
     />
 
