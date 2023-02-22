@@ -1,15 +1,53 @@
 <script setup lang="ts">
+import { useFires } from '~~/stores/fires';
 import { useLayers, LayerWithProps } from '~~/stores/layers';
 import { useTheme } from '~~/stores/theme';
-const props = defineProps<{ layer: LayerWithProps }>();
+const props = defineProps<{ layer: LayerWithProps; dateSelector?: boolean }>();
 
 const layers = useLayers();
 const theme = useTheme();
+const fires = useFires();
 const opacity = ref(props.layer.opacity);
+
+const dates = ref<string[]>([]);
+const dateSliderValue = ref<number>(0);
+const selectedDate = ref<string>('');
 
 const isSettingsOpen = ref(false);
 const toggleOpen = () => {
   isSettingsOpen.value = !isSettingsOpen.value;
+};
+
+onMounted(() => {
+  if (props.dateSelector) {
+    const start = new Date(fires.getFiresTo);
+    dates.value.push(start.toISOString().slice(0, 10));
+
+    // push the next 5 days
+    for (let i = 1; i < 5; i++) {
+      const date = new Date(start.setDate(start.getDate() + 1));
+      dates.value.push(date.toISOString().slice(0, 10));
+    }
+
+    selectedDate.value = dates.value[0];
+
+    if (props.layer.time) {
+      selectedDate.value =
+        dates.value.indexOf(props.layer.time) > -1
+          ? props.layer.time
+          : dates.value[0];
+
+      dateSliderValue.value = dates.value.indexOf(selectedDate.value);
+    }
+  }
+});
+
+const setDate = (e: any) => {
+  e.preventDefault();
+
+  selectedDate.value = dates.value[dateSliderValue.value];
+
+  layers.setDate(props.layer, selectedDate.value);
 };
 </script>
 
@@ -53,5 +91,24 @@ const toggleOpen = () => {
       hide-details
       @click.stop="layers.setOpacity(props.layer, opacity)"
     ></v-slider>
+
+    <div v-if="props.dateSelector">
+      <div style="display: flex; justify-content: space-between">
+        <p>Date:</p>
+        <p>
+          {{ selectedDate }}
+        </p>
+      </div>
+      <v-slider
+        v-model="dateSliderValue"
+        :min="0"
+        :max="dates.length - 1"
+        :step="1"
+        :thumb-size="0"
+        :color="theme.isDark ? 'white' : 'black'"
+        hide-details
+        @click.stop="setDate($event)"
+      ></v-slider>
+    </div>
   </div>
 </template>

@@ -5,13 +5,18 @@ export const useLayers = defineStore('layers', {
   }),
   getters: {
     getList: ({ list }) =>
-      list.map((el, index) => ({ ...el, zIndex: 1100 - index })),
+      list
+        .map((el, index) => ({ ...el, zIndex: 1100 - index }))
+        .filter(({ id }) => id !== 'fwi'),
     getActives: ({ list }) => {
       const filtered = list
         .filter(({ active }) => active)
-        .map((el, index) => ({ ...el, zIndex: 1100 - index }));
+        .map((el, index) =>
+          el.id !== 'fwi' ? { ...el, zIndex: 1100 - index } : { ...el }
+        );
       return [...filtered];
     },
+    getFwi: ({ list }) => list.find(({ id }) => id === 'fwi'),
   },
   actions: {
     async init(layers: Layer[]) {
@@ -27,11 +32,12 @@ export const useLayers = defineStore('layers', {
       if (tiles) {
         const tilesArr = Array.isArray(tiles) ? tiles : [tiles];
         tilesArr.forEach((tile) => {
-          const [id, opacity] = (tile as string).split('_');
+          const [id, opacity, date] = (tile as string).split('_');
           const layer = this.list.find((l) => l.id === id);
           if (layer) {
             layer.active = true;
             layer.opacity = parseFloat(opacity);
+            layer.time = date;
           }
         });
       }
@@ -64,7 +70,7 @@ export const useLayers = defineStore('layers', {
 
       const activeTiles = this.list
         .filter(({ active }) => active)
-        .map(({ id, opacity }) => `${id}_${opacity.toFixed(1)}`);
+        .map(({ id, opacity, time }) => `${id}_${opacity.toFixed(1)}_${time}`);
 
       await this.router.push({
         query: {
@@ -89,6 +95,16 @@ export const useLayers = defineStore('layers', {
 
       await this.pushOnQps();
     },
+    async setDate(layer: Layer, date: string) {
+      this.list = this.list.map((l) => {
+        if (l.id === layer.id) {
+          l.time = date;
+        }
+        return l;
+      });
+
+      await this.pushOnQps();
+    },
   },
 });
 
@@ -97,7 +113,7 @@ export interface Layer {
   id: string;
   type: string;
   url: string;
-  time: string;
+  time: string | null;
   layers: string;
 }
 

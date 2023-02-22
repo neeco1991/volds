@@ -32,11 +32,11 @@ const data = {
   ],
   tiles: [
     {
-      title: 'Fire Weather Index (FWI))',
+      title: 'Fire Weather Index (FWI)',
       id: 'fwi',
       type: 'wms',
       url: 'https://ies-ows.jrc.ec.europa.eu/effis',
-      time: new Date().toISOString().slice(0, 10),
+      time: null,
       layers: 'ecmwf007.fwi',
     },
     {
@@ -44,7 +44,7 @@ const data = {
       id: 'ghsl',
       type: 'wms',
       url: 'https://ies-ows.jrc.ec.europa.eu/gwis',
-      time: new Date().toISOString().slice(0, 10),
+      time: null,
       layers: 'ghsl',
     },
     {
@@ -52,7 +52,7 @@ const data = {
       id: 'corine',
       type: 'wms',
       url: 'https://ies-ows.jrc.ec.europa.eu/effis',
-      time: new Date().toISOString().slice(0, 10),
+      time: null,
       layers: 'corine.l2',
     },
     {
@@ -60,7 +60,7 @@ const data = {
       id: 'fuels',
       type: 'wms',
       url: 'https://ies-ows.jrc.ec.europa.eu/effis',
-      time: new Date().toISOString().slice(0, 10),
+      time: null,
       layers: 'fuel_map',
     },
     {
@@ -68,7 +68,7 @@ const data = {
       id: 'water',
       type: 'zyx',
       url: 'https://storage.googleapis.com/global-surface-water/maptiles/transitions/{z}/{x}/{y}.png',
-      time: new Date().toISOString().slice(0, 10),
+      time: null,
       layers: 'fuel_map',
     },
   ],

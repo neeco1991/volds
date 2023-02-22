@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useFires } from '~~/stores/fires';
 import { LayerWithProps } from '~~/stores/layers';
 
 const props = defineProps<{
   data: LayerWithProps;
 }>();
+
+const fires = useFires();
 
 const opacity = computed(() => props.data.opacity);
 const reference = ref<any>();
@@ -18,7 +21,11 @@ watch([reference, opacity], () => {
     <ol-source-image-wms
       v-if="props.data.type === 'wms'"
       :url="props.data.url"
-      :time="props.data.time"
+      :time="
+        props.data.time ||
+        new Date(fires.getFiresTo).toISOString().slice(0, 10) ||
+        new Date().toISOString().slice(0, 10)
+      "
       :layers="props.data.layers"
     />
   </ol-image-layer>

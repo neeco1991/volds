@@ -8,7 +8,7 @@ import { useTheme } from '../stores/theme';
 import { useSettings } from '../stores/settings';
 import { useMap } from '~~/stores/map';
 import { useFires } from '~~/stores/fires';
-import { useLayers } from '~~/stores/layers';
+import { Layer, useLayers } from '~~/stores/layers';
 
 export interface SimpleOverlayType {
   title: string;
@@ -21,15 +21,6 @@ export interface MapType {
   id: string;
 }
 
-export interface TileType {
-  title: string;
-  url: string;
-  type: string;
-  id: string;
-  time: string;
-  layers: string;
-}
-
 export interface MarkerType {
   position: [number, number];
   title: string;
@@ -39,7 +30,7 @@ type Props = {
   data: {
     types?: MapType[];
     overlays?: SimpleOverlayType[];
-    tiles?: TileType[];
+    tiles?: Layer[];
     markers?: MarkerType[];
     activeFireSelector?: boolean;
   };
@@ -181,7 +172,10 @@ onMounted(() => {
           >
             <!-- <div class="list-group-item">{{ element.title }}</div> -->
             <template #item="{ element }">
-              <div style="display: flex; align-items: center">
+              <div
+                v-if="element.id !== 'fwi'"
+                style="display: flex; align-items: center"
+              >
                 <div style="flex: 1">
                   <LayerSettings :layer="element"></LayerSettings>
                 </div>

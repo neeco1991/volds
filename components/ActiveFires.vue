@@ -2,9 +2,11 @@
 import { useFires } from '~~/stores/fires';
 import { DatePicker } from 'v-calendar';
 import { useTheme } from '~~/stores/theme';
+import { LayerWithProps, useLayers } from '~~/stores/layers';
 
 const fires = useFires();
 const theme = useTheme();
+const layers = useLayers();
 
 const date = ref<{ start: Date; end: Date }>({
   start: new Date(new Date().setDate(new Date().getDate() - 7)),
@@ -52,8 +54,13 @@ onMounted(() => {
     label="Show active fires on map"
     :model-value="fires.isActive"
     @click="showFires()"
+    hide-details
   >
   </v-switch>
+
+  <div v-if="layers.getFwi" style="margin-bottom: 0.5rem">
+    <LayerSettings :layer="layers.getFwi" :date-selector="true"></LayerSettings>
+  </div>
 
   <p style="margin-bottom: 0.5rem">Select a date range:</p>
   <DatePicker
@@ -61,6 +68,7 @@ onMounted(() => {
     is-expanded
     is-range
     v-model="date"
+    :max-date="new Date()"
     @click.stop="setDates()"
   ></DatePicker>
 
