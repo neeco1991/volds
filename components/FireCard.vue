@@ -13,7 +13,9 @@ const props = defineProps<{ data: Fire }>();
 // green, darker yellow, red
 const rankingColors = ['#4caf50', '#ffeb3b', '#f44336'];
 
-const compare = async () => {
+const compare = async (e: any) => {
+  e.preventDefault();
+  e.stopPropagation();
   fires.toggleCompare(props.data);
 };
 
@@ -73,7 +75,8 @@ const fireClicked = () => {
           size="small"
           variant="outlined"
           :color="fires.isCompared(data.id) ? 'error' : ''"
-          @click="compare()"
+          @click="(e: any) => compare(e)"
+          :disabled="fires.isLoading"
         >
           {{ fires.isCompared(data.id) ? 'Remove &rarr;' : '&larr; Details' }}
         </v-btn>

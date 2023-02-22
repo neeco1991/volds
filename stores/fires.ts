@@ -113,12 +113,14 @@ export const useFires = defineStore('fires', {
     async toggleCompare(fire: Fire) {
       const index = this.compare.findIndex((f) => f.id === fire.id);
       if (index === -1) {
+        this.loading = true;
         const dssResponse = await fetch(
           `https://api.wild-fire.eu/rest/firespread/forecast/${fire.id.toString()}/`
         );
         const dss_data = (await dssResponse.json()).dss_data;
         fire.dss_data = dss_data || [];
         this.compare.push(fire);
+        this.loading = false;
       } else {
         this.compare.splice(index, 1);
       }
