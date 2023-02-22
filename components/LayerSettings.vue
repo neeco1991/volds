@@ -19,28 +19,40 @@ const toggleOpen = () => {
 };
 
 onMounted(() => {
+  fires.$subscribe((mutation, state) => {
+    const { firesTo } = state;
+
+    if (new Date(firesTo).toISOString().slice(0, 10) !== dates.value[0]) {
+      fillDates();
+    }
+  });
   if (props.dateSelector) {
-    const start = new Date(fires.getFiresTo);
-    dates.value.push(start.toISOString().slice(0, 10));
-
-    // push the next 5 days
-    for (let i = 1; i < 5; i++) {
-      const date = new Date(start.setDate(start.getDate() + 1));
-      dates.value.push(date.toISOString().slice(0, 10));
-    }
-
-    selectedDate.value = dates.value[0];
-
-    if (props.layer.time) {
-      selectedDate.value =
-        dates.value.indexOf(props.layer.time) > -1
-          ? props.layer.time
-          : dates.value[0];
-
-      dateSliderValue.value = dates.value.indexOf(selectedDate.value);
-    }
+    fillDates();
   }
 });
+
+const fillDates = () => {
+  dates.value = [];
+  const start = new Date(fires.getFiresTo);
+  dates.value.push(start.toISOString().slice(0, 10));
+
+  // push the next 5 days
+  for (let i = 1; i < 5; i++) {
+    const date = new Date(start.setDate(start.getDate() + 1));
+    dates.value.push(date.toISOString().slice(0, 10));
+  }
+
+  selectedDate.value = dates.value[0];
+
+  if (props.layer.time) {
+    selectedDate.value =
+      dates.value.indexOf(props.layer.time) > -1
+        ? props.layer.time
+        : dates.value[0];
+
+    dateSliderValue.value = dates.value.indexOf(selectedDate.value);
+  }
+};
 
 const setDate = (e: any) => {
   e.preventDefault();
