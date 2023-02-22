@@ -97,6 +97,8 @@ onMounted(async () => {
       :projection="projection"
     />
 
+    <!-- <MouseController></MouseController> -->
+
     <ol-tile-layer>
       <ol-source-osm :url="map.url" />
     </ol-tile-layer>

@@ -13,6 +13,7 @@ export const useFires = defineStore('fires', {
     firesArea: 30,
     activeRankings: [0, 1, 2] as number[],
     orderBy: '-initialdate' as '-initialdate' | '-area',
+    selected: undefined as number | undefined,
   }),
   getters: {
     isActive: ({ active }) => active,
@@ -106,6 +107,9 @@ export const useFires = defineStore('fires', {
       this.active = target;
       this.pushOnQps();
     },
+    selectFire(id: number | undefined) {
+      this.selected = id;
+    },
     async toggleCompare(fire: Fire) {
       const index = this.compare.findIndex((f) => f.id === fire.id);
       if (index === -1) {
@@ -173,7 +177,7 @@ export interface Fire {
   fire_id: number;
   id: number;
   indicators: Indicator;
-  ranking: number;
+  ranking: 0 | 1 | 2;
   updated: string;
 }
 

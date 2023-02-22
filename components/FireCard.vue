@@ -2,7 +2,9 @@
 import { Fire } from '~~/stores/fires';
 import { useFires } from '~~/stores/fires';
 import indicators from '~~/lib/indicators';
+import { useTheme } from '~~/stores/theme';
 const fires = useFires();
+const theme = useTheme();
 
 const props = defineProps<{ data: Fire }>();
 
@@ -12,6 +14,10 @@ const rankingColors = ['#4caf50', '#ffeb3b', '#f44336'];
 const compare = async () => {
   fires.toggleCompare(props.data);
 };
+
+const selectFire = () => {
+  fires.selectFire(props.data.id);
+};
 </script>
 
 <template>
@@ -19,10 +25,12 @@ const compare = async () => {
     :style="`margin-bottom: 0.5rem; border-color: ${
       rankingColors[props.data.ranking]
     }`"
-    class="mx-auto"
+    :class="`mx-auto ${theme.dark ? 'dark-card' : 'ligth-card'}`"
     max-width="344"
     variant="outlined"
     :loading="fires.isLoading"
+    :onmouseenter="selectFire"
+    :onmouseleave="() => fires.selectFire(undefined)"
   >
     <v-card-item>
       <div
@@ -141,3 +149,12 @@ const compare = async () => {
     </v-card-actions>
   </v-card>
 </template>
+
+<style scoped>
+.v-card.ligth-card:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.v-card.dark-card:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+</style>

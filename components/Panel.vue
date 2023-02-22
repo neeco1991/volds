@@ -218,8 +218,9 @@ onMounted(() => {
       <Marker
         v-if="fires.active"
         :key="fire.id.toString()"
+        :ranking="fire.ranking"
         :position="fire.effis_data.centroid.coordinates as [number, number]"
-        :id="fire.id.toString()"
+        :id="fire.id"
       ></Marker>
     </div>
 
