@@ -5,12 +5,19 @@ const fires = useFires();
 
 <template>
   <div id="comparator">
-    <div id="scroller">
+    <div v-if="!fires.compareReduced" id="scroller">
       <ComparedFire
         v-for="fire in fires.compare"
         :data="fire"
         :key="fire.id.toString()"
       ></ComparedFire>
+    </div>
+    <div v-else id="scroller">
+      <ComparedFireReduced
+        v-for="fire in fires.compare"
+        :data="fire"
+        :key="fire.id.toString()"
+      ></ComparedFireReduced>
     </div>
   </div>
 </template>

@@ -18,7 +18,6 @@ const fires = useFires();
 const getForecastTime = (date: string, offset: number): string => {
   const d = new Date(date);
   d.setMinutes(offset);
-  // return day and hour
   return format(d, 'MM-dd HH:mm');
 };
 </script>
@@ -38,15 +37,26 @@ const getForecastTime = (date: string, offset: number): string => {
             <v-icon icon="mdi-fire"></v-icon>
             <p style="margin-left: 1rem">Fire {{ data.id }}</p>
           </div>
-          <v-btn
-            icon
-            border="none"
-            variant="flat"
-            color="transparent"
-            @click="() => fires.toggleCompare(data)"
-          >
-            <v-icon icon="mdi-close" size="x-large"></v-icon>
-          </v-btn>
+          <div>
+            <v-btn
+              icon
+              border="none"
+              variant="flat"
+              color="transparent"
+              @click="() => fires.setCompareReduced(true)"
+            >
+              <v-icon icon="mdi-minus" size="x-large"></v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              border="none"
+              variant="flat"
+              color="transparent"
+              @click="() => fires.toggleCompare(data)"
+            >
+              <v-icon icon="mdi-close" size="x-large"></v-icon>
+            </v-btn>
+          </div>
         </div>
       </template>
 
