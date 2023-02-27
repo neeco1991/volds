@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
 import { Fire } from '~~/stores/fires';
 
 interface Props {
@@ -32,6 +33,13 @@ const increment = (value: number) => {
   }
   perimeter.value = getPerimeter();
 };
+
+const getDate = (date: string, offset: number): string => {
+  const d = new Date(date);
+  d.setMinutes(offset);
+  // return day and hour
+  return format(d, 'yyyy-MM-dd HH:mm');
+};
 </script>
 
 <template>
@@ -56,8 +64,12 @@ const increment = (value: number) => {
       <div class="forecast-table__row">
         <b>Forecast time</b>
         <p>
-          {{ dss_data[forecastIndex].date.slice(0, 10) }}
-          {{ dss_data[forecastIndex].forecast.Hour }}
+          {{
+            getDate(
+              dss_data[forecastIndex].date,
+              dss_data[forecastIndex].duration_minutes
+            )
+          }}
         </p>
       </div>
       <div class="forecast-table__row">

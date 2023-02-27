@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
 import { bases, Distances } from '~~/lib/bases';
 import indicators from '~~/lib/indicators';
 import { Fire, useFires } from '~~/stores/fires';
@@ -13,6 +14,13 @@ const rankingDesc = [
 const props = defineProps<{ data: Fire }>();
 const theme = useTheme();
 const fires = useFires();
+
+const getForecastTime = (date: string, offset: number): string => {
+  const d = new Date(date);
+  d.setMinutes(offset);
+  // return day and hour
+  return format(d, 'MM-dd HH:mm');
+};
 </script>
 
 <template>
@@ -263,7 +271,7 @@ const fires = useFires();
             <div v-for="f in data.dss_data.slice(12)">
               <div style="display: flex">
                 <p style="width: 100%">
-                  {{ f.date.slice(5, 10) }} {{ f.forecast.Hour.toString() }}
+                  {{ getForecastTime(f.date, f.duration_minutes) }}
                 </p>
                 <p style="width: 100%">{{ f.forecast.pop_total.toString() }}</p>
                 <p style="width: 100%">

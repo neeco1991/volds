@@ -16,6 +16,7 @@
     "@mdi/font": "^7.1.96",
     "@pinia/nuxt": "^0.4.6",
     "chart.js": "^4.2.0",
+    "date-fns": "^2.29.3",
     "pinia": "^2.0.29",
     "sass": "^1.57.1",
     "v-calendar": "^3.0.0-alpha.8",

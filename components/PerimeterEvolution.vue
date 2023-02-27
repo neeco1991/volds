@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { format } from 'date-fns';
 import { Fire } from '~~/stores/fires';
 
 const props = defineProps<{
@@ -8,7 +9,11 @@ const props = defineProps<{
 const mapData = () => ({
   labels: (props.data.dss_data || [])
     .filter((_, index) => index > 11)
-    .map(({ date, duration_minutes }) => duration_minutes.toString()),
+    .map(({ date, duration_minutes }) => {
+      const d = new Date(date);
+      d.setMinutes(duration_minutes);
+      return format(d, 'HH:mm');
+    }),
   datasets: [
     {
       label: 'Perimeter',
