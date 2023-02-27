@@ -10,6 +10,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'vue-chartjs';
+import { useTheme } from '~~/stores/theme';
 
 ChartJS.register(
   CategoryScale,
@@ -26,10 +27,38 @@ const props = defineProps<{
   error: boolean;
   data: any;
 }>();
+
+const theme = useTheme();
+
+const getData = () => {
+  if (!theme.isDark) {
+    return {
+      ...props.data,
+      datasets: props.data.datasets.map((dataset: any) => ({
+        ...dataset,
+        backgroundColor: 'red',
+        borderColor: 'black',
+      })),
+    };
+  } else {
+    return {
+      ...props.data,
+      datasets: props.data.datasets.map((dataset: any) => ({
+        ...dataset,
+        backgroundColor: 'red',
+        borderColor: 'white',
+      })),
+    };
+  }
+};
 </script>
 
 <template>
-  <Line v-if="props.loaded && !props.error" :data="props.data" />
+  <Line
+    v-if="props.loaded && !props.error"
+    :data="getData()"
+    :options="{ plugins: { legend: { display: false } } }"
+  />
   <v-card
     v-else-if="loaded && error"
     color="error"

@@ -38,6 +38,8 @@ export const useFires = defineStore('fires', {
       this.firesArea = query.firesArea
         ? parseInt(query.firesArea as string)
         : 30;
+      this.orderBy =
+        query.orderBy === '-initialdate' ? '-initialdate' : '-area';
       await this.fetchList();
       let compare = query.compare;
       if (compare && !Array.isArray(compare)) {
@@ -58,8 +60,7 @@ export const useFires = defineStore('fires', {
           this.activeRankings.push(parseInt(rank as string));
         }
       }
-      this.orderBy =
-        query.orderBy === '-initialdate' ? '-initialdate' : '-area';
+
       this.pushOnQps();
     },
     isCompared(id: number) {

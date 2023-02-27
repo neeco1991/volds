@@ -12,7 +12,6 @@ const mapData = () => ({
   datasets: [
     {
       label: 'Perimeter',
-      backgroundColor: '#f87979',
       data: (props.data?.dss_data || [])
         .filter((_, index) => index > 11)
         .map((item) => item.perimeter),

@@ -34,7 +34,6 @@ onMounted(async () => {
       datasets: [
         {
           label: 'FWI',
-          backgroundColor: '#f87979',
           data: data.y_data.fwi,
         },
       ],
