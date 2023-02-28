@@ -214,12 +214,8 @@ onMounted(() => {
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <div v-for="fire in fires.getList">
-      <Marker
-        v-if="fires.active"
-        :key="fire.id.toString()"
-        :fire="fire"
-      ></Marker>
+    <div v-for="fire in fires.list">
+      <Marker :key="fire.id.toString()" :fire="fire"></Marker>
     </div>
 
     <div v-for="(overlay, index) in overlays">

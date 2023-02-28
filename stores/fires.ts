@@ -18,8 +18,12 @@ export const useFires = defineStore('fires', {
   getters: {
     isActive: ({ active }) => active,
     isLoading: ({ loading }) => loading,
-    getList: ({ list, activeRankings }) =>
-      list.filter((fire) => activeRankings.includes(fire.ranking)),
+    getList: ({ list, activeRankings }) => {
+      const filtered = list.filter((fire) =>
+        activeRankings.includes(fire.ranking)
+      );
+      return filtered;
+    },
     getCompare: ({ compare }) => compare,
     getFiresFrom: ({ firesFrom }) => firesFrom,
     getFiresTo: ({ firesTo }) => firesTo,
@@ -52,6 +56,9 @@ export const useFires = defineStore('fires', {
         }
       }
       let ranks = query.fireRank;
+      if (ranks) {
+        this.activeRankings = [];
+      }
       if (ranks && !Array.isArray(ranks)) {
         ranks = [ranks];
       }
@@ -75,6 +82,7 @@ export const useFires = defineStore('fires', {
       } else {
         this.activeRankings.push(rank);
       }
+
       this.pushOnQps();
     },
     isRankActive(rank: number) {

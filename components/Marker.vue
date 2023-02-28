@@ -2,13 +2,18 @@
 import green from '../assets/green-fire.png';
 import yellow from '../assets/yellow-fire.png';
 import red from '../assets/red-fire.png';
-import { Fire } from '~~/stores/fires';
+import { Fire, useFires } from '~~/stores/fires';
+
+const fires = useFires();
 
 const props = defineProps<{
   fire: Fire;
 }>();
 
 const reference = ref<any>();
+const unsubscribe = ref<() => void>(() => {
+  return;
+});
 
 const getIcon = () => {
   if (props.fire.ranking === 2) {
@@ -26,6 +31,37 @@ watch([reference, props.fire], () => {
   } else {
     reference.value.vectorLayer.setProperties({ zIndex: 2001 });
   }
+});
+
+onMounted(() => {
+  unsubscribe.value = fires.$onAction(
+    ({
+      name, // name of the action
+      store, // store instance, same as `someStore`
+      args, // array of parameters passed to the action
+      after, // hook after the action returns or resolves
+      onError, // hook if the action throws or rejects
+    }) => {
+      if (name === 'setActive' || name === 'toggleActive') {
+        reference.value.vectorLayer.setProperties({ visible: !store.isActive });
+      }
+      if (name === 'filter') {
+        after(() => {
+          reference.value.vectorLayer.setProperties({
+            visible: fires.activeRankings.includes(props.fire.ranking),
+          });
+        });
+      }
+    }
+  );
+
+  reference.value.vectorLayer.setProperties({
+    visible: fires.activeRankings.includes(props.fire.ranking),
+  });
+});
+
+onUnmounted(() => {
+  unsubscribe.value();
 });
 </script>
 

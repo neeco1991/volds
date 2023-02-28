@@ -3,24 +3,10 @@ import { Fire, useFires } from '~~/stores/fires';
 import { useTheme } from '~~/stores/theme';
 const fires = useFires();
 const theme = useTheme();
-
-const orderBy = (firelist: Fire[], order: string) => {
-  if (order === 'date') {
-    return firelist.sort((a, b) => {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
-  }
-  if (order === 'ranking') {
-    return firelist.sort((a, b) => {
-      return b.ranking - a.ranking;
-    });
-  }
-  return firelist;
-};
 </script>
 
 <template>
-  <div id="fires" v-if="fires.active">
+  <div id="fires" v-show="fires.active">
     <v-card
       class="mx-auto rounded-t-lg"
       style="height: 100%; display: flex; flex-direction: column"
@@ -54,7 +40,7 @@ const orderBy = (firelist: Fire[], order: string) => {
       </template>
 
       <div id="scroller">
-        <fire-card v-for="fire in fires.getList" :data="fire"></fire-card>
+        <fire-card v-for="fire in fires.list" :data="fire"></fire-card>
         <empty-fires v-if="fires.count === 0"></empty-fires>
       </div>
     </v-card>

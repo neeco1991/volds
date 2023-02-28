@@ -35,6 +35,7 @@ const fireClicked = () => {
 
 <template>
   <v-card
+    v-show="fires.activeRankings.includes(props.data.ranking)"
     :style="`margin-bottom: 0.5rem; border-color: ${
       rankingColors[props.data.ranking]
     }; cursor: pointer;`"
