@@ -23,7 +23,8 @@ const getForecastTime = (date: string, offset: number): string => {
 
 const downloadPdf = () => {
   window.open(
-    `https://gwis.jrc.ec.europa.eu/proxy?url=https://gwis-reports.s3.eu-west-1.amazonaws.com/effis/SingleFirereport-${props.data.id.toString()}-rev_0.pdf`
+    `https://gwis-reports.s3.eu-west-1.amazonaws.com/effis/SingleFirereport-${props.data.id.toString()}-rev_0.pdf`,
+    '_blank'
   );
 };
 </script>
