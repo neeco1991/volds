@@ -98,9 +98,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="panel">
+  <div v-show="settings.active" id="panel">
     <v-card
-      v-if="settings.active"
+      style="z-index: 1000"
       class="mx-auto rounded-t-lg rounded-b-0"
       :color="theme.primary"
     >
@@ -217,18 +217,18 @@ onMounted(() => {
     <div v-for="fire in fires.list">
       <Marker :key="fire.id.toString()" :fire="fire"></Marker>
     </div>
-
-    <div v-for="(overlay, index) in overlays">
-      <OverlayItem
-        v-if="overlay.active"
-        :key="index.toString()"
-        :title="overlay.title"
-        :position="overlay.position"
-      ></OverlayItem>
-    </div>
-
-    <Tile v-for="layer in layers.getActives" :data="layer"></Tile>
   </div>
+
+  <div v-for="(overlay, index) in overlays">
+    <OverlayItem
+      v-if="overlay.active"
+      :key="index.toString()"
+      :title="overlay.title"
+      :position="overlay.position"
+    ></OverlayItem>
+  </div>
+
+  <Tile v-for="layer in layers.getActives" :data="layer"></Tile>
 </template>
 
 <style scoped>
@@ -238,7 +238,6 @@ onMounted(() => {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none;
   border-radius: inherit;
-  z-index: 1000;
 }
 
 #panel::-webkit-scrollbar {
