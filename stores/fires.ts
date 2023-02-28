@@ -18,12 +18,8 @@ export const useFires = defineStore('fires', {
   getters: {
     isActive: ({ active }) => active,
     isLoading: ({ loading }) => loading,
-    getList: ({ list, activeRankings }) => {
-      const filtered = list.filter((fire) =>
-        activeRankings.includes(fire.ranking)
-      );
-      return filtered;
-    },
+    getList: ({ list, activeRankings }) =>
+      list.filter((fire) => activeRankings.includes(fire.ranking)),
     getCompare: ({ compare }) => compare,
     getFiresFrom: ({ firesFrom }) => firesFrom,
     getFiresTo: ({ firesTo }) => firesTo,
