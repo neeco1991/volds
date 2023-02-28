@@ -10,6 +10,9 @@ const fires = useFires();
 const opacity = ref(props.layer.opacity);
 
 const dates = ref<string[]>([]);
+const unsubscribe = ref<() => void>(() => {
+  return;
+});
 const dateSliderValue = ref<number>(0);
 const selectedDate = ref<string>('');
 
@@ -19,21 +22,38 @@ const toggleOpen = () => {
 };
 
 onMounted(() => {
-  fires.$subscribe((mutation, state) => {
-    const { firesTo } = state;
-
-    if (new Date(firesTo).toISOString().slice(0, 10) !== dates.value[0]) {
-      fillDates();
-    }
-  });
   if (props.dateSelector) {
-    fillDates();
+    unsubscribe.value = fires.$onAction(
+      ({
+        name, // name of the action
+        store, // store instance, same as `someStore`
+        args, // array of parameters passed to the action
+        after, // hook after the action returns or resolves
+        onError, // hook if the action throws or rejects
+      }) => {
+        if (name === 'setDates') {
+          const firesTo = new Date(args[1]);
+
+          if (new Date(firesTo).toISOString().slice(0, 10) !== dates.value[0]) {
+            fillDates(firesTo);
+          }
+        }
+      }
+    );
+
+    fillDates(fires.getFiresTo);
   }
 });
 
-const fillDates = () => {
+onUnmounted(() => {
+  if (props.dateSelector) {
+    unsubscribe.value();
+  }
+});
+
+const fillDates = (startingDate: Date) => {
   dates.value = [];
-  const start = new Date(fires.getFiresTo);
+  const start = new Date(startingDate);
   dates.value.push(start.toISOString().slice(0, 10));
 
   // push the next 5 days
