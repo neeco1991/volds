@@ -20,6 +20,12 @@ const getForecastTime = (date: string, offset: number): string => {
   d.setMinutes(offset);
   return format(d, 'MM-dd HH:mm');
 };
+
+const downloadPdf = () => {
+  window.open(
+    `https://gwis.jrc.ec.europa.eu/proxy?url=https://gwis-reports.s3.eu-west-1.amazonaws.com/effis/SingleFirereport-${props.data.id.toString()}-rev_0.pdf`
+  );
+};
 </script>
 
 <template>
@@ -203,7 +209,9 @@ const getForecastTime = (date: string, offset: number): string => {
 
       <div class="box little-box">
         <v-card-subtitle> PDF Report </v-card-subtitle>
-        <v-card-text> <v-btn size="small">Download</v-btn> </v-card-text>
+        <v-card-text>
+          <v-btn size="small" @click="downloadPdf()">Download</v-btn>
+        </v-card-text>
       </div>
 
       <div class="box mid-box">
