@@ -13,7 +13,6 @@ export const useFires = defineStore('fires', {
     firesArea: 30,
     activeRankings: [0, 1, 2] as number[],
     orderBy: '-initialdate' as '-initialdate' | '-area',
-    selected: undefined as number | undefined,
     compareReduced: false as boolean,
   }),
   getters: {
@@ -112,8 +111,12 @@ export const useFires = defineStore('fires', {
       this.active = target;
       this.pushOnQps();
     },
-    selectFire(id: number | undefined) {
-      this.selected = id;
+    selectFire(fire: Fire) {
+      if (fire.selected) {
+        fire.selected = false;
+      } else {
+        fire.selected = true;
+      }
     },
     async toggleCompare(fire: Fire) {
       const index = this.compare.findIndex((f) => f.id === fire.id);
@@ -147,7 +150,7 @@ export const useFires = defineStore('fires', {
       }
 
       this.error = null;
-      this.list = data.results;
+      this.list = data.results.map((fire) => ({ ...fire, selected: false }));
       this.count = data.count;
 
       this.loading = false;
@@ -186,6 +189,7 @@ export interface Fire {
   indicators: Indicator;
   ranking: 0 | 1 | 2;
   updated: string;
+  selected: boolean;
 }
 
 interface EffisData {

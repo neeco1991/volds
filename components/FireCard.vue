@@ -20,7 +20,11 @@ const compare = async (e: any) => {
 };
 
 const selectFire = () => {
-  fires.selectFire(props.data.id);
+  if (props.data.selected) {
+    props.data.selected = false;
+  } else {
+    props.data.selected = true;
+  }
 };
 
 const fireClicked = () => {
@@ -39,7 +43,7 @@ const fireClicked = () => {
     variant="outlined"
     :loading="fires.isLoading"
     :onmouseenter="selectFire"
-    :onmouseleave="() => fires.selectFire(undefined)"
+    :onmouseleave="selectFire"
     @click="fireClicked"
   >
     <v-card-item>

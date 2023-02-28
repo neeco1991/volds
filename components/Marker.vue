@@ -2,31 +2,26 @@
 import green from '../assets/green-fire.png';
 import yellow from '../assets/yellow-fire.png';
 import red from '../assets/red-fire.png';
-import { useFires } from '~~/stores/fires';
-
-const fires = useFires();
+import { Fire } from '~~/stores/fires';
 
 const props = defineProps<{
-  position: [number, number];
-  id: number;
-  ranking: 0 | 1 | 2;
+  fire: Fire;
 }>();
 
 const reference = ref<any>();
-const selected = computed(() => fires.selected);
 
 const getIcon = () => {
-  if (props.ranking === 2) {
+  if (props.fire.ranking === 2) {
     return red;
-  } else if (props.ranking === 1) {
+  } else if (props.fire.ranking === 1) {
     return yellow;
   }
 
   return green;
 };
 
-watch([reference, selected], () => {
-  if (selected.value === props.id) {
+watch([reference, props.fire], () => {
+  if (props.fire.selected) {
     reference.value.vectorLayer.setProperties({ zIndex: 2002 });
   } else {
     reference.value.vectorLayer.setProperties({ zIndex: 2001 });
@@ -38,11 +33,13 @@ watch([reference, selected], () => {
   <ol-vector-layer ref="reference" :zIndex="2001">
     <ol-source-vector>
       <ol-feature>
-        <ol-geom-point :coordinates="props.position"></ol-geom-point>
+        <ol-geom-point
+          :coordinates="props.fire.effis_data.centroid.coordinates"
+        ></ol-geom-point>
         <ol-style>
           <ol-style-icon
             :src="getIcon()"
-            :scale="fires.selected === props.id ? 0.3 : 0.15"
+            :scale="props.fire.selected ? 0.3 : 0.15"
           >
           </ol-style-icon>
           <!-- <ol-style-text
