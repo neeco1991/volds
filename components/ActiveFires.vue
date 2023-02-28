@@ -17,7 +17,10 @@ let area = ref<number>(30);
 
 let order = ref<string>('-initialdate');
 
+let active = ref<boolean>(fires.isActive);
+
 const showFires = () => {
+  active.value = fires.isActive;
   fires.toggleActive();
 };
 
@@ -52,7 +55,7 @@ onMounted(() => {
 <template>
   <v-switch
     label="Show active fires on map"
-    :model-value="fires.isActive"
+    :model-value="active"
     @click="showFires()"
     hide-details
   >

@@ -33,11 +33,12 @@ export const useLayers = defineStore('layers', {
         const tilesArr = Array.isArray(tiles) ? tiles : [tiles];
         tilesArr.forEach((tile) => {
           const [id, opacity, date] = (tile as string).split('_');
+          console.log(id, opacity, date);
           const layer = this.list.find((l) => l.id === id);
           if (layer) {
             layer.active = true;
             layer.opacity = parseFloat(opacity);
-            layer.time = date;
+            layer.time = date !== 'null' ? date : null;
           }
         });
       }
