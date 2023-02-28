@@ -58,6 +58,7 @@ onMounted(() => {
   reference.value.vectorLayer.setProperties({
     visible: fires.activeRankings.includes(props.fire.ranking),
   });
+  reference.value.vectorLayer.setProperties({ visible: fires.isActive });
 });
 
 onUnmounted(() => {
