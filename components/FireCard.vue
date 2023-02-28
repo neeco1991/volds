@@ -55,9 +55,15 @@ const fireClicked = () => {
         "
       >
         <div>
-          <div class="text-overline">{{ props.data.effis_data.iso2 }}</div>
+          <div class="text-overline">
+            {{ props.data.effis_data.iso2 || '--' }}
+          </div>
           <div class="text-h6">
-            {{ props.data.effis_data.admlvl3 || props.data.effis_data.country }}
+            {{
+              props.data.effis_data.admlvl3 ||
+              props.data.effis_data.country ||
+              'Unknown'
+            }}
           </div>
         </div>
         <div style="text-align: right">

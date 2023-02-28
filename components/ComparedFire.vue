@@ -74,10 +74,14 @@ const downloadPdf = () => {
         "
       >
         <v-card-title>
-          {{ props.data.effis_data.admlvl3 || props.data.effis_data.country }}
+          {{
+            props.data.effis_data.admlvl3 ||
+            props.data.effis_data.country ||
+            'Unknown'
+          }}
         </v-card-title>
         <v-card-subtitle>
-          {{ props.data.effis_data.iso2 }}
+          {{ props.data.effis_data.iso2 || '--' }}
         </v-card-subtitle>
       </div>
 

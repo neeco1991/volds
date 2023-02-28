@@ -19,9 +19,9 @@ let order = ref<string>('-initialdate');
 
 let active = ref<boolean>(fires.isActive);
 
-const showFires = () => {
-  active.value = fires.isActive;
-  fires.toggleActive();
+const showFires = async () => {
+  active.value = !active.value;
+  await fires.toggleActive();
 };
 
 const setDates = () => {
