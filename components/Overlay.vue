@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { useSettings } from '~~/stores/settings';
 import { useMap } from '~~/stores/map';
 import { useLayers } from '~~/stores/layers';
 
-const settings = useSettings();
 const map = useMap();
 const layers = useLayers();
 
@@ -81,7 +79,7 @@ onMounted(async () => {
 
 <template>
   <div id="overlay">
-    <Panel v-if="settings.active" :data="data"></Panel>
+    <Panel :data="data"></Panel>
 
     <Comparator></Comparator>
 
