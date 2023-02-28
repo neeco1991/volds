@@ -77,7 +77,7 @@ const downloadPdf = () => {
           {{
             props.data.effis_data.admlvl3 ||
             props.data.effis_data.country ||
-            'Unknown'
+            'N. A.'
           }}
         </v-card-title>
         <v-card-subtitle>

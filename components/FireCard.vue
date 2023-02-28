@@ -62,7 +62,7 @@ const fireClicked = () => {
             {{
               props.data.effis_data.admlvl3 ||
               props.data.effis_data.country ||
-              'Unknown'
+              'N. A.'
             }}
           </div>
         </div>
