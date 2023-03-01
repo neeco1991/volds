@@ -1,12 +1,25 @@
 <script setup lang="ts">
+import { Coordinate } from 'ol/coordinate';
+import MapEvent from 'ol/MapEvent';
 import { useFires } from '~~/stores/fires';
+import { useMap } from '~~/stores/map';
 // import { useRouterStore } from '~~/stores/routerStore';
 
 // const r = useRouterStore();
 const fires = useFires();
+const map = useMap();
+
+const olmap = ref<any>();
 
 onMounted(async () => {
   await fires.init();
+
+  olmap.value.map.on('moveend', (e: MapEvent) => {
+    const center = e.map.getView().getCenter() as [number, number];
+    const zoom = e.map.getView().getZoom() as number;
+    map.setCenter(center);
+    map.setZoom(zoom);
+  });
 });
 </script>
 
@@ -17,6 +30,7 @@ onMounted(async () => {
       :loadTilesWhileAnimating="true"
       :loadTilesWhileInteracting="true"
       style="height: 100%; position: relative"
+      ref="olmap"
     >
       <Overlay></Overlay>
     </ol-map>

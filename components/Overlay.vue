@@ -68,8 +68,13 @@ const data = {
   activeFireSelector: true,
 };
 
+// const unsubscribe = ref<() => void>(() => {
+//   return;
+// });
+
 const projection = ref('EPSG:4326');
 const rotation = ref(0);
+const view = ref<any>();
 
 onMounted(async () => {
   map.init(data.types);

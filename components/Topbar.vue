@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMap } from '~~/stores/map';
 import { useFires } from '../stores/fires';
 import { useSettings } from '../stores/settings';
 import { useTheme } from '../stores/theme';
@@ -13,6 +14,7 @@ const theme = useTheme();
 const settings = useSettings();
 const fires = useFires();
 const router = useRouter();
+const map = useMap();
 
 const items: Item[] = [
   {
@@ -45,6 +47,25 @@ const toggleSettings = () => {
   settings.toggleActive();
 };
 
+const linkText = ref<string>('Copy link');
+
+const home = () => {
+  router.push('/');
+  map.setCenter([10, 47]);
+  map.setZoom(6);
+};
+
+const share = async () => {
+  const link = window.location.href;
+  await navigator.clipboard.writeText(link);
+
+  linkText.value = 'Copied!';
+
+  setTimeout(() => {
+    linkText.value = 'Copy link';
+  }, 2000);
+};
+
 const toggleFires = () => {
   const { query } = router.currentRoute.value;
   fires.toggleActive();
@@ -59,66 +80,92 @@ const toggleFires = () => {
 </script>
 
 <template>
-  <v-card
-    :color="theme.primary"
-    elevated
-    min-height="4rem"
-    rounded="0"
-    style="position: relative"
-  >
-    <v-breadcrumbs
-      style="display: flex; justify-content: center"
-      :items="items"
-    >
-      <template v-slot:divider>
-        <v-icon icon="mdi-chevron-right"></v-icon>
-      </template>
-    </v-breadcrumbs>
-
-    <!-- div positioned at the center right -->
+  <v-card :color="theme.primary" elevated min-height="4rem" rounded="0">
     <div
       style="
-        position: absolute;
-        top: 50%;
-        right: 20px;
-        transform: translateY(-50%);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.2rem;
       "
     >
-      <v-btn
-        icon
-        border="none"
-        variant="flat"
-        color="transparent"
-        @click="toggleSettings()"
-      >
-        <v-icon
-          :color="settings.isActive ? '#ada6a2' : undefined"
-          icon="mdi-cog"
-        ></v-icon>
-      </v-btn>
+      <div>
+        <v-btn
+          icon
+          border="none"
+          variant="flat"
+          color="transparent"
+          @click="home()"
+        >
+          <v-icon icon="mdi-home"></v-icon>
+          <v-tooltip activator="parent" location="bottom">Center map</v-tooltip>
+        </v-btn>
+        <v-btn
+          icon
+          border="none"
+          variant="flat"
+          color="transparent"
+          @click="share()"
+        >
+          <v-icon icon="mdi-share-variant"></v-icon>
+          <v-tooltip activator="parent" location="bottom">{{
+            linkText
+          }}</v-tooltip>
+        </v-btn>
+      </div>
+      <v-breadcrumbs :items="items">
+        <template v-slot:divider>
+          <v-icon icon="mdi-chevron-right"></v-icon>
+        </template>
+      </v-breadcrumbs>
 
-      <v-btn
-        icon
-        border="none"
-        variant="flat"
-        color="transparent"
-        @click="toggleFires()"
-      >
-        <v-icon
-          :color="fires.isActive ? '#ff4000' : undefined"
-          icon="mdi-fire"
-        ></v-icon>
-      </v-btn>
+      <div>
+        <v-btn
+          icon
+          border="none"
+          variant="flat"
+          color="transparent"
+          @click="toggleSettings()"
+        >
+          <v-tooltip activator="parent" location="bottom">Settings</v-tooltip>
 
-      <v-btn
-        icon
-        border="none"
-        variant="flat"
-        color="transparent"
-        @click="changeTheme()"
-      >
-        <v-icon icon="mdi-brightness-6"></v-icon>
-      </v-btn>
+          <v-icon
+            :color="settings.isActive ? '#ada6a2' : undefined"
+            icon="mdi-cog"
+          ></v-icon>
+        </v-btn>
+
+        <v-btn
+          icon
+          border="none"
+          variant="flat"
+          color="transparent"
+          @click="toggleFires()"
+        >
+          <v-tooltip activator="parent" location="bottom"
+            >List of fires</v-tooltip
+          >
+
+          <v-icon
+            :color="fires.isActive ? '#ff4000' : undefined"
+            icon="mdi-fire"
+          ></v-icon>
+        </v-btn>
+
+        <v-btn
+          icon
+          border="none"
+          variant="flat"
+          color="transparent"
+          @click="changeTheme()"
+        >
+          <v-tooltip activator="parent" location="bottom"
+            >Change theme</v-tooltip
+          >
+
+          <v-icon icon="mdi-brightness-6"></v-icon>
+        </v-btn>
+      </div>
     </div>
   </v-card>
 </template>

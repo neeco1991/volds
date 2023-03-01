@@ -12,6 +12,20 @@ export const useMap = defineStore('map', {
     async init(types: { url: string; id: string }[]) {
       const { query } = await this.router.currentRoute.value;
       const type = query.type;
+      const center = query.center;
+      const zoom = query.zoom;
+
+      if (center) {
+        const centerArr = (center as string).split(',');
+        if (centerArr.length === 2) {
+          this.setCenter([parseFloat(centerArr[0]), parseFloat(centerArr[1])]);
+        }
+      }
+
+      if (zoom) {
+        this.zoom = +zoom;
+      }
+
       if (type) {
         const typeObj = types.find((t) => t.id === type);
         if (typeObj) {
@@ -27,6 +41,7 @@ export const useMap = defineStore('map', {
     },
     setZoom(value: number) {
       this.zoom = value;
+      this.pushOnQps();
     },
     setType(type: { url: string; id: string }) {
       this.url = type.url;
@@ -39,6 +54,8 @@ export const useMap = defineStore('map', {
         query: {
           ...query,
           type: this.id,
+          center: this.center.join(','),
+          zoom: this.zoom,
         },
       });
     },
