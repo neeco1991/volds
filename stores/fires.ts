@@ -90,11 +90,11 @@ export const useFires = defineStore('fires', {
 
       this.fetchList();
     },
-    setDates(from: Date, to: Date) {
+    async setDates(from: Date, to: Date) {
       if (from !== this.firesFrom || to !== this.firesTo) {
         this.firesFrom = from;
         this.firesTo = to;
-        this.pushOnQps();
+        await this.pushOnQps();
 
         this.fetchList();
       }
@@ -161,7 +161,7 @@ export const useFires = defineStore('fires', {
     },
     async pushOnQps() {
       const { query } = await this.router.currentRoute.value;
-      this.router.push({
+      await this.router.push({
         query: {
           ...query,
           firesFrom: this.firesFrom.toISOString().slice(0, 10),

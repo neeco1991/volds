@@ -21,8 +21,8 @@ const showFires = () => {
   fires.toggleActive();
 };
 
-const setDates = () => {
-  fires.setDates(date.value.start, date.value.end);
+const setDates = async () => {
+  await fires.setDates(date.value.start, date.value.end);
 };
 
 const setArea = () => {
