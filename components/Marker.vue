@@ -79,15 +79,8 @@ onUnmounted(() => {
             :scale="props.fire.selected ? 0.3 : 0.15"
           >
           </ol-style-icon>
-          <!-- <ol-style-text
-            color="white"
-            :text="props.id"
-            :scale="1.4"
-          ></ol-style-text> -->
         </ol-style>
       </ol-feature>
     </ol-source-vector>
   </ol-vector-layer>
 </template>
-
-<!-- effis statistic -->

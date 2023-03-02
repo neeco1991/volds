@@ -14,6 +14,7 @@ export const useFires = defineStore('fires', {
     activeRankings: [0, 1, 2] as number[],
     orderBy: '-initialdate' as '-initialdate' | '-area',
     compareReduced: false as boolean,
+    selected: null as Fire | null,
   }),
   getters: {
     isActive: ({ active }) => active,
@@ -68,6 +69,9 @@ export const useFires = defineStore('fires', {
     },
     setCompareReduced(reduced: boolean) {
       this.compareReduced = reduced;
+    },
+    setSelected(fire: Fire | null) {
+      this.selected = fire;
     },
     isCompared(id: number) {
       return this.compare.findIndex((f) => f.id === id) !== -1;

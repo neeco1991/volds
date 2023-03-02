@@ -219,14 +219,11 @@ onMounted(() => {
     </div>
   </div>
 
-  <div v-for="(overlay, index) in overlays">
-    <OverlayItem
-      v-if="overlay.active"
-      :key="index.toString()"
-      :title="overlay.title"
-      :position="overlay.position"
-    ></OverlayItem>
-  </div>
+  <OverlayItem
+    v-if="fires.selected"
+    :key="`${fires.selected.id.toString()}-overlay`"
+    :fire="fires.selected"
+  ></OverlayItem>
 
   <Tile v-for="layer in layers.getActives" :data="layer"></Tile>
 </template>
