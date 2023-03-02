@@ -58,12 +58,7 @@ const props = defineProps<{
         {{ (props.data.effis_data.other_natural_percent || 0).toFixed(1) }}
       </p>
     </div>
-    <div style="display: flex; justify-content: space-between">
-      <p>Natura 2K</p>
-      <p>
-        {{ (props.data.effis_data.natura2k_percent || 0).toFixed(1) }}
-      </p>
-    </div>
+
     <div style="display: flex; justify-content: space-between">
       <p>Sclerophyll</p>
       <p>
@@ -74,10 +69,25 @@ const props = defineProps<{
         }}
       </p>
     </div>
-    <div style="display: flex; justify-content: space-between">
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+      "
+    >
       <p>Agricolture areas</p>
       <p>
         {{ (props.data.effis_data.agriculture_percent || 0).toFixed(1) }}
+      </p>
+    </div>
+    <v-divider></v-divider>
+    <div
+      style="display: flex; justify-content: space-between; margin-top: 0.2rem"
+    >
+      <p>Natura 2K</p>
+      <p>
+        {{ (props.data.effis_data.natura2k_percent || 0).toFixed(1) }}
       </p>
     </div>
   </div>
