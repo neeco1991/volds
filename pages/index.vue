@@ -52,7 +52,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="main-page">
+  <main class="main-page">
     <Topbar style="z-index: 1000"></Topbar>
     <ol-map
       :loadTilesWhileAnimating="true"
@@ -62,7 +62,7 @@ onMounted(async () => {
     >
       <Overlay></Overlay>
     </ol-map>
-  </div>
+  </main>
 </template>
 
 <style>

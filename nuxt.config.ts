@@ -27,6 +27,6 @@ export default defineNuxtConfig({
     payloadExtraction: true,
   },
   app: {
-    baseURL: '/apps/dss.test/',
-  }
+    baseURL: '/',
+  },
 });

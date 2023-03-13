@@ -165,6 +165,8 @@ const toggleFires = () => {
 
           <v-icon icon="mdi-brightness-6"></v-icon>
         </v-btn>
+
+        <Login></Login>
       </div>
     </div>
   </v-card>
